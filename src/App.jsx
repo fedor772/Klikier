@@ -1,10 +1,15 @@
 import './App.css'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaHome, FaTasks, FaUserFriends, FaAddressCard } from "react-icons/fa";
+import React from 'react';
 
 export default function App() {
   const [count, setCount] = useState(0);
   const [strong, setStrong] = useState(100);
+  const [page, setPage] = useState(0);
+  useEffect(() => {
+    console.log('Page была изменена:', page);
+  }, [page]); 
 
   function handleClick() {
     if (strong > 0) {
@@ -21,19 +26,19 @@ export default function App() {
       </div>
       <button onClick={handleClick}>rc</button>
       <nav>
-        <span>
+        <span onClick={() => setPage(0)}>
           <FaHome />
           <span className="label">Главная</span>
         </span>
-        <span>
+        <span onClick={() => setPage(1)}>
           <FaTasks />
           <span className="label">Задания</span>
         </span>
-        <span>
+        <span onClick={() => setPage(2)}>
           <FaUserFriends />
           <span className="label">Друзья</span>
         </span>
-        <span>
+        <span onClick={() => setPage(3)}>
           <FaAddressCard />
           <span className="label">Профиль</span>
         </span>

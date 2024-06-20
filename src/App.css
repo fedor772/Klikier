@@ -14,8 +14,8 @@ background: linear-gradient(0deg, rgba(166,167,241,1) 0%, rgba(23,53,132,1) 100%
 
 button {
   border-radius: 50%;
-  width: 150px;
-  height: 150px;
+  width: 220px;
+  height: 220px;
   border-color: #f7e165;
   background-color: #ffed4a;
   position: absolute;
@@ -26,7 +26,7 @@ button {
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
-  font-size: 50px;
+  font-size: 60px;
   color: #7d680c;
   text-align: center;
 }
