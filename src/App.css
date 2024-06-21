@@ -29,6 +29,7 @@ background: linear-gradient(0deg, rgba(166,167,241,1) 0%, rgba(23,53,132,1) 100%
   font-size: 70px;
   color: #7d680c;
   text-align: center;
+  box-shadow: 1px 1px 15px #363636;
 }
 
 .stats {
@@ -96,4 +97,14 @@ li {
   left:0;
   width:100%;
   height:100%;
+}
+
+.photo {
+  width: 100px;
+  height: 100px;
+}
+
+.container {
+  margin: 50px 0px;
+  text-align: center;
 }
