@@ -1,19 +1,32 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaHome, FaTasks, FaUserFriends, FaAddressCard } from "react-icons/fa";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useCookies } from 'react-cookie';
 
 export default function App() {
   const [count, setCount] = useState(0);
   const [strong, setStrong] = useState(100);
   const [page, setPage] = useState(0);
   const [showPromo, setShowPromo] = useState(true);
+  const [cookies, setCookie, removeCookie] = useCookies(['cookie-name']);
+
+  useEffect (() => {
+    if (cookies.count ) {
+      setCount(cookies.count + 1);
+    }
+    if (cookies.strong) {
+      setStrong(cookies.strong - 1);
+    }
+  }, []);
 
   function handleClick() {
     if (strong > 0) {
       setCount(count + 1);
       setStrong(strong - 1);
+      setCookie("count", count);
+      setCookie("strong", strong);
     }
   }
 
@@ -21,6 +34,9 @@ export default function App() {
     setPage(1);
     setCount(count + 50);
     setShowPromo(false);
+    if (strong > 0) {
+      setCookie("countreward", count);
+    }
   }
 
   return (
@@ -67,7 +83,7 @@ export default function App() {
       {page === 4 && (
         <div className="promo-page">
           <div class="myvideo">
-            <iframe src="/Klikier/public/promo.mp4" className="video"></iframe>
+            <iframe src="/Klikier/promo.mp4" className="video"></iframe>
           </div>
           <Button onClick={rewardvideo}>Получить награду</Button>
         </div>
