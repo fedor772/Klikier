@@ -1,6 +1,12 @@
 import "./App.css";
 import { useState, useEffect } from "react";
-import { FaHome, FaTasks, FaUserFriends, FaAddressCard, FaEdit } from "react-icons/fa";
+import {
+  FaHome,
+  FaTasks,
+  FaUserFriends,
+  FaAddressCard,
+  FaEdit,
+} from "react-icons/fa";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useCookies } from "react-cookie";
@@ -11,20 +17,23 @@ export default function App() {
   const [page, setPage] = useState(0);
   const [showPromo, setShowPromo] = useState(true);
   const [cookies, setCookie, removeCookie] = useCookies(["cookie-youname"]);
-  var youname = "Анонимный пользователь";
+  const [youname, setYouname] = useState("Анонимный пользователь");
 
   useEffect(() => {
-    if (cookies.count) {
-      setCount(cookies.count + 1);
-    }
-    if (cookies.strong) {
-      setStrong(cookies.strong - 1);
-    }
+    setCount(cookies.count ? cookies.count + 1 : 0);
+    setStrong(cookies.strong ? cookies.strong - 1 : 100);
     setShowPromo(cookies.showPromo);
-    if (cookies.youname) {
-      youname = cookies.youname;
-    }
+    setYouname(cookies.youname ? cookies.youname : "Анонимный пользователь");
   }, []);
+
+  useEffect(() => {
+    const strongInterval = setInterval(() => {
+      if (strong < 100) {
+        setStrong((prevStrong) => prevStrong + 1);
+      }
+    }, 10000); 
+    return () => clearInterval(strongInterval);
+  }, [strong]);
 
   function handleClick() {
     if (strong > 0) {
@@ -44,8 +53,9 @@ export default function App() {
   }
 
   function asksave() {
-    youname = prompt("Введите своё имя");
-    setCookie("youname", youname);
+    let localname = prompt("Введите своё имя");
+    setYouname(localname);
+    setCookie("youname", localname);
   }
 
   function Stats() {
@@ -100,8 +110,10 @@ export default function App() {
         <div className="profile-page">
           <div className="container">
             <img src="/Klikier/person.png" className="photo" />
-            <h2 className="youname">{youname}</h2> 
-            <Button onClick={asksave}>Изменить <FaEdit/></Button>
+            <h2 className="youname">{youname}</h2>
+            <Button onClick={asksave}>
+              Изменить <FaEdit />
+            </Button>
             <Stats />
           </div>
         </div>
@@ -118,18 +130,22 @@ export default function App() {
         <span onClick={() => setPage(0)}>
           <FaHome />
           <span className="label">Главная</span>
+          {page === 0 && <div className="primary"></div>}
         </span>
         <span onClick={() => setPage(1)}>
           <FaTasks />
           <span className="label">Задания</span>
+          {page === 1 && <div className="primary"></div>}
         </span>
         <span onClick={() => setPage(2)}>
           <FaUserFriends />
           <span className="label">Друзья</span>
+          {page === 2 && <div className="primary"></div>}
         </span>
         <span onClick={() => setPage(3)}>
           <FaAddressCard />
           <span className="label">Профиль</span>
+          {page === 3 && <div className="primary"></div>}
         </span>
       </nav>
     </main>

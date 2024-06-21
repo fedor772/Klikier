@@ -30,6 +30,7 @@ background: linear-gradient(0deg, rgba(166,167,241,1) 0%, rgba(23,53,132,1) 100%
   color: #7d680c;
   text-align: center;
   box-shadow: 1px 1px 15px #363636;
+  user-select: none;
 }
 
 .stats {
@@ -107,4 +108,11 @@ li {
 .container {
   margin: 50px 0px;
   text-align: center;
+}
+
+.primary {
+  width: 50px;
+  height: 1px;
+  background-color: white;
+  border-radius: 50px;
 }
