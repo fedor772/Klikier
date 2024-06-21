@@ -1,6 +1,6 @@
 import "./App.css";
 import { useState, useEffect } from "react";
-import { FaHome, FaTasks, FaUserFriends, FaAddressCard } from "react-icons/fa";
+import { FaHome, FaTasks, FaUserFriends, FaAddressCard, FaEdit } from "react-icons/fa";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useCookies } from "react-cookie";
@@ -10,8 +10,8 @@ export default function App() {
   const [strong, setStrong] = useState(100);
   const [page, setPage] = useState(0);
   const [showPromo, setShowPromo] = useState(true);
-  const [cookies, setCookie, removeCookie] = useCookies(["cookie-name"]);
-  const tg = window.Telegram.WebApp;
+  const [cookies, setCookie, removeCookie] = useCookies(["cookie-youname"]);
+  var youname = "Анонимный пользователь";
 
   useEffect(() => {
     if (cookies.count) {
@@ -21,6 +21,9 @@ export default function App() {
       setStrong(cookies.strong - 1);
     }
     setShowPromo(cookies.showPromo);
+    if (cookies.youname) {
+      youname = cookies.youname;
+    }
   }, []);
 
   function handleClick() {
@@ -38,6 +41,11 @@ export default function App() {
     setCookie("count", count + 49);
     setShowPromo(false);
     setCookie("showPromo", false);
+  }
+
+  function asksave() {
+    youname = prompt("Введите своё имя");
+    setCookie("youname", youname);
   }
 
   function Stats() {
@@ -92,7 +100,8 @@ export default function App() {
         <div className="profile-page">
           <div className="container">
             <img src="/Klikier/person.png" className="photo" />
-            <h2>Анонимный пользователь</h2>
+            <h2 className="youname">{youname}</h2> 
+            <Button onClick={asksave}>Изменить <FaEdit/></Button>
             <Stats />
           </div>
         </div>
