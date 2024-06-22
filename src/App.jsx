@@ -76,14 +76,13 @@ export default function App() {
       {page === 0 && (
         <div className="home-page">
           <Stats />
-          <button onClick={handleClick} className="mainbutton">
-            rc
-          </button>
+          <img src="/Klikier/coin.png" onClick={handleClick} className="mainbutton" />
         </div>
       )}
       {page === 1 && (
         <div className="tasks-page">
-          <header>Ваши задания</header>
+          <h2 className="taskheader">Ваши задания</h2>
+          <div className="divader"></div>
           <ul>
             {showPromo && (
               <li id="promovideo">
