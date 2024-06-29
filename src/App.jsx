@@ -10,6 +10,7 @@ import {
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useCookies } from "react-cookie";
+import axios from "axios";
 
 export default function App() {
   const [count, setCount] = useState(0);
@@ -18,13 +19,31 @@ export default function App() {
   const [showPromo, setShowPromo] = useState(true);
   const [cookies, setCookie, removeCookie] = useCookies(["cookie-youname"]);
   const [youname, setYouname] = useState("Анонимный пользователь");
+  const server = "http://127.0.0.1:5000/";
 
   useEffect(() => {
-    setCount(cookies.count ? cookies.count + 1 : 0);
+    setCount(cookies.count ? cookies.count + 1 : confUid());
     setStrong(cookies.strong ? cookies.strong - 1 : 100);
     setShowPromo(cookies.showPromo);
     setYouname(cookies.youname ? cookies.youname : "Анонимный пользователь");
   }, []);
+
+  async function getUid() {
+    try {
+      const response = await axios.get(server);
+      return response.data;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  function confUid() {
+    return 0;
+  }
+
+  getUid().then((result) => {
+    console.log(result);
+  });
 
   useEffect(() => {
     const strongInterval = setInterval(() => {
