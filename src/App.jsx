@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaHome,
   FaTasks,
@@ -10,7 +10,7 @@ import {
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useCookies } from "react-cookie";
-import axios from "axios";
+//import axios from "axios";
 
 export default function App() {
   const [count, setCount] = useState(0);
@@ -19,16 +19,16 @@ export default function App() {
   const [showPromo, setShowPromo] = useState(true);
   const [cookies, setCookie, removeCookie] = useCookies(["cookie-youname"]);
   const [youname, setYouname] = useState("Анонимный пользователь");
-  const server = "http://127.0.0.1:5000/";
+  //const server = "https://google.com";
 
   useEffect(() => {
-    setCount(cookies.count ? cookies.count + 1 : confUid());
+    setCount(cookies.count ? cookies.count + 1 : 0);
     setStrong(cookies.strong ? cookies.strong - 1 : 100);
     setShowPromo(cookies.showPromo);
     setYouname(cookies.youname ? cookies.youname : "Анонимный пользователь");
   }, []);
 
-  async function getUid() {
+  /*async function getUid() {
     try {
       const response = await axios.get(server);
       return response.data;
@@ -43,7 +43,7 @@ export default function App() {
 
   getUid().then((result) => {
     console.log(result);
-  });
+  });*/
 
   useEffect(() => {
     const strongInterval = setInterval(() => {
