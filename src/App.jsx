@@ -16,7 +16,6 @@ export default function App() {
   const [count, setCount] = useState(0);
   const [strong, setStrong] = useState(100);
   const [page, setPage] = useState(0);
-  const [showPromo, setShowPromo] = useState(true);
   const [cookies, setCookie, removeCookie] = useCookies(["cookie-youname"]);
   const [youname, setYouname] = useState("Анонимный пользователь");
   const [uid, setUid] = useState(0);
@@ -28,12 +27,18 @@ export default function App() {
       setUid(cookies.uid ? cookies.uid : 0);
     } else {
       confsUid();
-      setCount(0);
-      confUid();
     }
     setStrong(cookies.strong ? cookies.strong - 1 : 100);
     setYouname(cookies.youname ? cookies.youname : "Анонимный пользователь");
   }, []);
+
+  useEffect(() => {
+    console.log(uid);
+    if (!cookies.count && uid !== 0) {
+      setCount(0);
+      confUid(uid);
+    }
+  }, [uid]);
 
   async function getUid() {
     try {
@@ -44,23 +49,19 @@ export default function App() {
     }
   }
 
-  async function confUid() {
-    try {
-      const response = await axios.get(server + "setuid/" + int(uid + 1)).then((result) => {
-        return result;
-      });
-      alert("уээээ");
-      return response.data;
-    } catch (error) {
-      return error;
-    }
+  function confUid(auid) {
+    axios.post(`${server}setuid/${parseInt(auid) + 1}`)
+    .then(response => {
+      console.log(auid);
+      console.log(response.data);
+    });
   }
 
   function confsUid() {
     getUid().then((result) => {
       setCookie("uid", result);
       setUid(result);
-    });  
+    });
   }
 
   useEffect(() => {
@@ -68,7 +69,7 @@ export default function App() {
       if (strong < 100) {
         setStrong((prevStrong) => prevStrong + 1);
       }
-    }, 10000); 
+    }, 10000);
     return () => clearInterval(strongInterval);
   }, [strong]);
 

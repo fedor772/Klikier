@@ -16,7 +16,7 @@ def index():
         uid = None
     return str(uid)
 
-@app.route('/setuid/<int:uid>', methods=['GET'])
+@app.route('/setuid/<int:uid>', methods=['POST'])
 def setuid(uid):
     try:
         towrite = {"uid": uid}
