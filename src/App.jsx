@@ -19,7 +19,14 @@ export default function App() {
   const [cookies, setCookie, removeCookie] = useCookies(["cookie-youname"]);
   const [youname, setYouname] = useState("Анонимный пользователь");
   const [uid, setUid] = useState(0);
-  const server = "http://127.0.0.1:5000/";
+  const servers = ["http://127.0.0.1:5000/", "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/"];
+
+  let server;
+  if (servers[0].includes(window.location.hostname)) {
+    server = servers[0];
+  } else {
+    server = servers[1];
+  }
 
   useEffect(() => {
     if (cookies.count) {

@@ -1,5 +1,5 @@
 run = "npm run dev"
-modules = ["nodejs-20:v8-20230920-bd784b9"]
+modules = ["nodejs-20:v8-20230920-bd784b9", "python-3.10"]
 hidden = [".config", "package-lock.json"]
 entrypoint = "index.html"
 
@@ -13,6 +13,11 @@ language = "nodejs"
 deploymentTarget = "static"
 build = ["npm", "run", "build"]
 publicDir = "dist"
+
+[[ports]]
+localPort = 5000
+externalPort = 5000
+exposeLocalhost = true
 
 [[ports]]
 localPort = 5173
