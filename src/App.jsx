@@ -10,7 +10,7 @@ import {
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useCookies } from "react-cookie";
-//import axios from "axios";
+import axios from "axios";
 
 export default function App() {
   const [count, setCount] = useState(0);
@@ -19,16 +19,23 @@ export default function App() {
   const [showPromo, setShowPromo] = useState(true);
   const [cookies, setCookie, removeCookie] = useCookies(["cookie-youname"]);
   const [youname, setYouname] = useState("Анонимный пользователь");
-  //const server = "https://google.com";
+  const [uid, setUid] = useState(0);
+  const server = "http://127.0.0.1:5000/";
 
   useEffect(() => {
-    setCount(cookies.count ? cookies.count + 1 : 0);
+    if (cookies.count) {
+      setCount(cookies.count + 1);
+      setUid(cookies.uid ? cookies.uid : 0);
+    } else {
+      confsUid();
+      setCount(0);
+      confUid();
+    }
     setStrong(cookies.strong ? cookies.strong - 1 : 100);
-    setShowPromo(cookies.showPromo);
     setYouname(cookies.youname ? cookies.youname : "Анонимный пользователь");
   }, []);
 
-  /*async function getUid() {
+  async function getUid() {
     try {
       const response = await axios.get(server);
       return response.data;
@@ -37,13 +44,24 @@ export default function App() {
     }
   }
 
-  function confUid() {
-    return 0;
+  async function confUid() {
+    try {
+      const response = await axios.get(server + "setuid/" + int(uid + 1)).then((result) => {
+        return result;
+      });
+      alert("уээээ");
+      return response.data;
+    } catch (error) {
+      return error;
+    }
   }
 
-  getUid().then((result) => {
-    console.log(result);
-  });*/
+  function confsUid() {
+    getUid().then((result) => {
+      setCookie("uid", result);
+      setUid(result);
+    });  
+  }
 
   useEffect(() => {
     const strongInterval = setInterval(() => {
@@ -61,14 +79,6 @@ export default function App() {
       setCookie("count", count);
       setCookie("strong", strong);
     }
-  }
-
-  function rewardvideo() {
-    setPage(1);
-    setCount(count + 50);
-    setCookie("count", count + 49);
-    setShowPromo(false);
-    setCookie("showPromo", false);
   }
 
   function asksave() {
@@ -103,14 +113,6 @@ export default function App() {
           <h2 className="taskheader">Ваши задания</h2>
           <div className="divader"></div>
           <ul>
-            {showPromo && (
-              <li id="promovideo">
-                Посмотреть промо ролик (награда 50 кликов){" "}
-                <Button onClick={() => setPage(4)} className="taskbutton">
-                  Выполнить
-                </Button>
-              </li>
-            )}
             <li>Пригласить одного друга</li>
             <li>Пригласить 5 друзей</li>
           </ul>
@@ -133,15 +135,8 @@ export default function App() {
               Изменить <FaEdit />
             </Button>
             <Stats />
+            <div>Ваш uid: {uid}</div>
           </div>
-        </div>
-      )}
-      {page === 4 && (
-        <div className="promo-page">
-          <div class="myvideo">
-            <iframe src="/Klikier/promo.mp4" className="video"></iframe>
-          </div>
-          <Button onClick={rewardvideo}>Получить награду</Button>
         </div>
       )}
       <nav>
