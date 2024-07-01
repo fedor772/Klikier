@@ -19,7 +19,7 @@ export default function App() {
   const [cookies, setCookie, removeCookie] = useCookies(["cookie-youname"]);
   const [youname, setYouname] = useState("Анонимный пользователь");
   const [uid, setUid] = useState(0);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const servers = [
     "http://127.0.0.1:5000/",
     "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/",
@@ -57,7 +57,6 @@ export default function App() {
       setOpen(true);
       return response.data;
     } catch (error) {
-      removeCookie("uid");
       setOpen(false);
       return error;
     }
@@ -72,8 +71,10 @@ export default function App() {
 
   function confsUid() {
     getUid().then((result) => {
-      setCookie("uid", result);
       setUid(result);
+      if (open) {
+        setCookie("uid", result);
+      }
     });
   }
 
@@ -81,6 +82,7 @@ export default function App() {
     const strongInterval = setInterval(() => {
       if (strong < 100) {
         setStrong((prevStrong) => prevStrong + 1);
+        setCookie("strong", strong);
       }
     }, 10000);
     return () => clearInterval(strongInterval);
@@ -156,9 +158,7 @@ export default function App() {
             {open && <div>Ваш uid: {uid}</div>}
             {!open && (
               <Alert variant="danger">
-                Внимание! В данный момент отключена серверная часть приложения!
-                Но при этом вы всё равно можете продолжать пользоваться. Если
-                это вызвало какие-то сбои, то пишите нам в поддержку, которая есть в нашем боте
+                Внимание! В данный момент отключена серверная часть приложения! Если вы начали регистрацию именно в этот момент, вам нужно сбросить все данные cookies. Для большей информации обратитесь в нашу техподдержку
               </Alert>
             )}
           </div>
