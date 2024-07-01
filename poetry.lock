@@ -908,6 +908,32 @@ pycryptodomex = ">=3.18.0"
 docs = ["Sphinx[docs] (>=7.1,<8)", "sphinx-autodoc-typehints[docs] (>=1.25.2)", "sphinx-rtd-theme[docs] (>=1.2.1,<3.0.0)"]
 
 [[package]]
+name = "pytelegrambotapi"
+version = "4.20.0"
+description = "Python Telegram bot api."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pytelegrambotapi-4.20.0-py3-none-any.whl", hash = "sha256:f0161a1f54c2066aead22ef47241d7ae153f827fc22e7bab43c6e7911d129f56"},
+    {file = "pytelegrambotapi-4.20.0.tar.gz", hash = "sha256:97acd88723e6568ee5dbfa793eab64f0510c9a3b0a6dd571e26556e8c66b0a07"},
+]
+
+[package.dependencies]
+requests = "*"
+
+[package.extras]
+aiohttp = ["aiohttp"]
+aioredis = ["aioredis"]
+coloredlogs = ["coloredlogs"]
+fastapi = ["fastapi"]
+json = ["ujson"]
+pil = ["pillow"]
+psutil = ["psutil"]
+redis = ["redis (>=3.4.1)"]
+uvicorn = ["uvicorn"]
+watchdog = ["watchdog"]
+
+[[package]]
 name = "replit"
 version = "4.0.0"
 description = "A library for interacting with features of Replit"
@@ -1101,4 +1127,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "b5f181541467964078db076546e88a605b53ac912c636c56e3432919170cce28"
+content-hash = "20acd67bb68b50631dde2c8ac53a3cd20cb7217579177b527b57fbc15fc19484"

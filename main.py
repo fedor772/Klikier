@@ -2,6 +2,8 @@ import json
 from flask import Flask, request
 from flask_cors import CORS
 from replit import db
+import os
+import threading
 
 app = Flask(__name__)
 CORS(app)
@@ -14,7 +16,7 @@ def addinfo():
         count = str(data.get('count'))
         strong = str(data.get('strong'))
         youname = str(data.get('youname'))
-        db[uid] = {"count": str(count), "strong": strong, "youname": youname}
+        db[uid] = {"uid": str(uid), "count": str(count), "strong": str(strong), "youname": str(youname)}
         print("Информация добавлена:", db[uid])
         return "Успешно"
     except Exception as e:
@@ -43,5 +45,10 @@ def index():
         uid = None
     return str(uid)
 
+def run_bot():
+    os.system("python bot.py")
+
 if __name__ == '__main__':
+    bot_thread = threading.Thread(target=run_bot)
+    bot_thread.start()
     app.run(debug=True)
