@@ -44,6 +44,22 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const data = {
+      uid: uid,
+      count: count,
+      strong: strong, 
+      youname: youname
+    };
+    axios.post(`${server}addinfo`, data)
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  }, [count, strong, youname]);
+
+  useEffect(() => {
     console.log(uid);
     if (!cookies.count && uid !== 0) {
       setCount(0);
@@ -158,7 +174,10 @@ export default function App() {
             {open && <div>Ваш uid: {uid}</div>}
             {!open && (
               <Alert variant="danger">
-                Внимание! В данный момент отключена серверная часть приложения! Если вы начали регистрацию именно в этот момент, вам нужно сбросить все данные cookies. Для большей информации обратитесь в нашу техподдержку
+                Внимание! В данный момент отключена серверная часть приложения!
+                Если вы начали регистрацию именно в этот момент, вам нужно
+                сбросить все данные cookies. Для большей информации обратитесь в
+                нашу техподдержку
               </Alert>
             )}
           </div>
