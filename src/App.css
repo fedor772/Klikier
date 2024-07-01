@@ -37,7 +37,7 @@
 }
 
 nav {
-  position: absolute;
+  position: fixed;
   bottom: 10px;
   font-size: 25px;
   color: #fff;

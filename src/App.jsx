@@ -7,7 +7,7 @@ import {
   FaAddressCard,
   FaEdit,
 } from "react-icons/fa";
-import { Button } from "react-bootstrap";
+import { Button, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useCookies } from "react-cookie";
 import axios from "axios";
@@ -19,7 +19,11 @@ export default function App() {
   const [cookies, setCookie, removeCookie] = useCookies(["cookie-youname"]);
   const [youname, setYouname] = useState("Анонимный пользователь");
   const [uid, setUid] = useState(0);
-  const servers = ["http://127.0.0.1:5000/", "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/"];
+  const [open, setOpen] = useState(false);
+  const servers = [
+    "http://127.0.0.1:5000/",
+    "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/",
+  ];
 
   let server;
   if (servers[0].includes(window.location.hostname)) {
@@ -50,15 +54,17 @@ export default function App() {
   async function getUid() {
     try {
       const response = await axios.get(server);
+      setOpen(true);
       return response.data;
     } catch (error) {
+      removeCookie("uid");
+      setOpen(false);
       return error;
     }
   }
 
   function confUid(auid) {
-    axios.post(`${server}setuid/${parseInt(auid) + 1}`)
-    .then(response => {
+    axios.post(`${server}setuid/${parseInt(auid) + 1}`).then((response) => {
       console.log(auid);
       console.log(response.data);
     });
@@ -113,7 +119,11 @@ export default function App() {
       {page === 0 && (
         <div className="home-page">
           <Stats />
-          <img src="/Klikier/coin.png" onClick={handleClick} className="mainbutton" />
+          <img
+            src="/Klikier/coin.png"
+            onClick={handleClick}
+            className="mainbutton"
+          />
         </div>
       )}
       {page === 1 && (
@@ -143,7 +153,14 @@ export default function App() {
               Изменить <FaEdit />
             </Button>
             <Stats />
-            <div>Ваш uid: {uid}</div>
+            {open && <div>Ваш uid: {uid}</div>}
+            {!open && (
+              <Alert variant="danger">
+                Внимание! В данный момент отключена серверная часть приложения!
+                Но при этом вы всё равно можете продолжать пользоваться. Если
+                это вызвало какие-то сбои, то пишите нам в поддержку, которая есть в нашем боте
+              </Alert>
+            )}
           </div>
         </div>
       )}
