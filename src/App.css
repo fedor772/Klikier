@@ -40,7 +40,7 @@ nav {
   position: fixed;
   bottom: 10px;
   font-size: 25px;
-  color: #fff;
+  color: white;
   display: flex;
   justify-content: space-between;
   background-color: #00153b;
@@ -71,26 +71,6 @@ li {
   justify-content: space-between;
 }
 
-.myvideo {
-  position:relative;
-  padding: 0 0 56.25% 0;
-  height:0;
-  overflow:hidden;
-}
-
-.myvideo iframe, .myvideo object, .myvideo embed {
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-}
-
-.photo {
-  width: 100px;
-  height: 100px;
-}
-
 .container {
   margin: 50px 0px;
   text-align: center;
@@ -100,12 +80,4 @@ li {
   height: 0.5px;
   background-color: white;
   border-radius: 50px;
-}
-
-.primary {
-  width: 50px;
-}
-
-.taskheader {
-  margin: 10px;
 }

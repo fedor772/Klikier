@@ -6,6 +6,7 @@ import {
   FaUserFriends,
   FaAddressCard,
   FaEdit,
+  FaRegWindowClose,
 } from "react-icons/fa";
 import { Button, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -20,17 +21,9 @@ export default function App() {
   const [youname, setYouname] = useState("Анонимный пользователь");
   const [uid, setUid] = useState(0);
   const [open, setOpen] = useState(true);
-  const servers = [
-    "http://127.0.0.1:5000/",
-    "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/",
-  ];
-
-  let server;
-  if (servers[0].includes(window.location.hostname)) {
-    server = servers[0];
-  } else {
-    server = servers[1];
-  }
+  const [offchan, setOffchan] = useState(false);
+  const server =
+    "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
 
   useEffect(() => {
     if (cookies.count) {
@@ -41,22 +34,24 @@ export default function App() {
     }
     setStrong(cookies.strong ? cookies.strong - 1 : 100);
     setYouname(cookies.youname ? cookies.youname : "Анонимный пользователь");
+    setOffchan(cookies.offchan);
   }, []);
 
   useEffect(() => {
     const data = {
       uid: uid,
       count: count,
-      strong: strong, 
-      youname: youname
+      strong: strong,
+      youname: youname,
     };
-    axios.post(`${server}addinfo`, data)
-    .then(response => {
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.error(error);
-    });
+    axios
+      .post(`${server}addinfo`, data)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, [count, strong, youname]);
 
   useEffect(() => {
@@ -119,6 +114,29 @@ export default function App() {
     setCookie("youname", localname);
   }
 
+  function reset() {
+    let confirmname = prompt("Введите имя, которое у вас указано в профиле");
+    if (confirmname == youname) {
+      setCount(0);
+      setStrong(100);
+      setPage(0);
+      setUid(0);
+      setOpen(true);
+      setOffchan(true);
+      removeCookie("uid");
+      removeCookie("count");
+      removeCookie("strong");
+      removeCookie("youname");
+      removeCookie("offchan");
+      window.location.reload();
+    }
+  }
+
+  function subscribe(times, url) {
+    setCookie("count", count + times);
+    window.location = url;
+  }
+
   function Stats() {
     return (
       <div className="stats">
@@ -146,10 +164,22 @@ export default function App() {
       )}
       {page === 1 && (
         <div className="tasks-page">
-          <h2 className="taskheader">Ваши задания</h2>
+          <h2 style={{ margin: 10 + "px" }}>Ваши задания</h2>
           <div className="divader"></div>
           <ul>
-            <li>Пригласить одного друга</li>
+            <li>
+              Подписаться на наш официальный канал (награда – 50 кликов){" "}
+              {!offchan && (<Button
+                className="offcha"
+                onClick={() => {
+                  setCookie("offchan", true);
+                  window.location.reload();
+                  subscribe(50, "https://t.me/rcoinoff");
+                }}
+              >
+                Выполнить
+              </Button>)}
+            </li>
             <li>Пригласить 5 друзей</li>
           </ul>
         </div>
@@ -165,7 +195,10 @@ export default function App() {
       {page === 3 && (
         <div className="profile-page">
           <div className="container">
-            <img src="/Klikier/person.png" className="photo" />
+            <img
+              src="/Klikier/person.png"
+              style={{ width: 100 + "px", height: 100 + "px" }}
+            />
             <h2 className="youname">{youname}</h2>
             <Button onClick={asksave}>
               Изменить <FaEdit />
@@ -180,6 +213,14 @@ export default function App() {
                 нашу техподдержку
               </Alert>
             )}
+            <Button
+              variant="danger"
+              className="reset"
+              style={{ marginTop: 20 + "px" }}
+              onClick={reset}
+            >
+              Сбросить весь прогресс <FaRegWindowClose />
+            </Button>
           </div>
         </div>
       )}
@@ -187,22 +228,30 @@ export default function App() {
         <span onClick={() => setPage(0)}>
           <FaHome />
           <span className="label">Главная</span>
-          {page === 0 && <div className="primary"></div>}
+          {page === 0 && (
+            <div style={{ width: 50 + "px" }} className="primary"></div>
+          )}
         </span>
         <span onClick={() => setPage(1)}>
           <FaTasks />
           <span className="label">Задания</span>
-          {page === 1 && <div className="primary"></div>}
+          {page === 1 && (
+            <div style={{ width: 50 + "px" }} className="primary"></div>
+          )}
         </span>
         <span onClick={() => setPage(2)}>
           <FaUserFriends />
           <span className="label">Друзья</span>
-          {page === 2 && <div className="primary"></div>}
+          {page === 2 && (
+            <div style={{ width: 50 + "px" }} className="primary"></div>
+          )}
         </span>
         <span onClick={() => setPage(3)}>
           <FaAddressCard />
           <span className="label">Профиль</span>
-          {page === 3 && <div className="primary"></div>}
+          {page === 3 && (
+            <div style={{ width: 50 + "px" }} className="primary"></div>
+          )}
         </span>
       </nav>
     </main>
