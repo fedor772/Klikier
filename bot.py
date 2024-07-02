@@ -1,7 +1,7 @@
 from telebot import TeleBot, types
 import threading
 
-bot = TeleBot('YOUR-TOKEN')
+bot = TeleBot(open("key.config", "r").read())
 
 @bot.message_handler(commands=['start'])
 def url(message):
