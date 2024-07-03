@@ -10,7 +10,6 @@ import {
 } from "react-icons/fa";
 import { Button, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-// Removed: import { useCookies } from "react-cookie";
 import axios from "axios";
 import { snackbar } from "mdui/functions/snackbar.js";
 import "mdui/mdui.css";
@@ -19,7 +18,6 @@ export default function App() {
   const [count, setCount] = useState(0);
   const [strong, setStrong] = useState(200);
   const [page, setPage] = useState(0);
-  // Removed: const [cookies, setCookie, removeCookie] = useCookies(["cookie-youname"]);
   const [youname, setYouname] = useState("Анонимный пользователь");
   const [uid, setUid] = useState(0);
   const [open, setOpen] = useState(true);
