@@ -12,16 +12,23 @@ import { Button, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useCookies } from "react-cookie";
 import axios from "axios";
+import { snackbar } from "mdui/functions/snackbar.js";
+import "mdui/mdui.css";
 
 export default function App() {
   const [count, setCount] = useState(0);
-  const [strong, setStrong] = useState(100);
+  const [strong, setStrong] = useState(200);
   const [page, setPage] = useState(0);
   const [cookies, setCookie, removeCookie] = useCookies(["cookie-youname"]);
   const [youname, setYouname] = useState("Анонимный пользователь");
   const [uid, setUid] = useState(0);
   const [open, setOpen] = useState(true);
   const [offchan, setOffchan] = useState(false);
+  const [dsserv, setDsserv] = useState(false);
+  const [doptg, setDoptg] = useState(false);
+  const [phand, setPhand] = useState(false);
+  const [pfhand, setPfhand] = useState(false);
+  const [pffhand, setPffhand] = useState(false);
   const server =
     "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
 
@@ -32,9 +39,14 @@ export default function App() {
     } else {
       confsUid();
     }
-    setStrong(cookies.strong ? cookies.strong - 1 : 100);
+    setStrong(cookies.strong ? cookies.strong - 1 : 200);
     setYouname(cookies.youname ? cookies.youname : "Анонимный пользователь");
     setOffchan(cookies.offchan);
+    setDsserv(cookies.dsserv);
+    setDoptg(cookies.doptg);
+    setPhand(cookies.phand);
+    setPfhand(cookies.pfhand);
+    setPffhand(cookies.pffhand);
   }, []);
 
   useEffect(() => {
@@ -91,7 +103,7 @@ export default function App() {
 
   useEffect(() => {
     const strongInterval = setInterval(() => {
-      if (strong < 100) {
+      if (strong < 200) {
         setStrong((prevStrong) => prevStrong + 1);
         setCookie("strong", strong);
       }
@@ -105,6 +117,8 @@ export default function App() {
       setStrong(strong - 1);
       setCookie("count", count);
       setCookie("strong", strong);
+    } else {
+      snackbar({ message: "Недостаточно силы" });
     }
   }
 
@@ -117,17 +131,16 @@ export default function App() {
   function reset() {
     let confirmname = prompt("Введите имя, которое у вас указано в профиле");
     if (confirmname == youname) {
-      setCount(0);
-      setStrong(100);
-      setPage(0);
-      setUid(0);
-      setOpen(true);
-      setOffchan(true);
       removeCookie("uid");
       removeCookie("count");
       removeCookie("strong");
       removeCookie("youname");
       removeCookie("offchan");
+      removeCookie("dsserv");
+      removeCookie("doptg");
+      removeCookie("phand");
+      removeCookie("pfhand");
+      removeCookie("pffhand");
       window.location.reload();
     }
   }
@@ -135,6 +148,16 @@ export default function App() {
   function subscribe(times, url) {
     setCookie("count", count + times);
     window.location = url;
+  }
+
+  function taskup(hand, times, needs) {
+    if (count >= needs) {
+      setCookie(hand, true);
+      window.location.reload();
+      subscribe(times, "");
+    } else {
+      snackbar({ message: "Недостаточно кликов для получения награды" });
+    }
   }
 
   function Stats() {
@@ -169,18 +192,77 @@ export default function App() {
           <ul>
             <li>
               Подписаться на наш официальный канал (награда – 50 кликов){" "}
-              {!offchan && (<Button
-                className="offcha"
-                onClick={() => {
-                  setCookie("offchan", true);
-                  window.location.reload();
-                  subscribe(50, "https://t.me/rcoinoff");
-                }}
-              >
-                Выполнить
-              </Button>)}
+              {!offchan && (
+                <Button
+                  onClick={() => {
+                    setCookie("offchan", true);
+                    window.location.reload();
+                    subscribe(50, "https://t.me/rcoinoff");
+                  }}
+                >
+                  Выполнить
+                </Button>
+              )}
             </li>
-            <li>Пригласить 5 друзей</li>
+            <li>
+              Подписаться на наш дискорд сервер (награда – 50 кликов){" "}
+              {!dsserv && (
+                <Button
+                  onClick={() => {
+                    setCookie("dsserv", true);
+                    window.location.reload();
+                    subscribe(50, "https://discord.com/invite/wMtjyJ2y");
+                  }}
+                >
+                  Выполнить
+                </Button>
+              )}
+            </li>
+            <li>
+              Подписаться на дополнительный канал создателя (награда – 25
+              кликов){" "}
+              {!doptg && (
+                <Button
+                  onClick={() => {
+                    setCookie("doptg", true);
+                    window.location.reload();
+                    subscribe(25, "https://t.me/almazniy_golub");
+                  }}
+                >
+                  Выполнить
+                </Button>
+              )}
+            </li>
+            <li>
+              Набрать 1000 кликов (награда – 100 кликов){" "}
+              {!phand && (
+                <Button
+                  onClick={()  => taskup("phand", 100, 1000)}
+                >
+                  Выполнить
+                </Button>
+              )}
+            </li>
+            <li>
+              Набрать 5000 кликов (награда – 1000 кликов){" "}
+              {!pfhand && (
+                <Button
+                  onClick={() => taskup("pfhand", 1000, 5000)}
+                >
+                  Выполнить
+                </Button>
+              )}
+            </li>
+            <li>
+              Набрать 10000 кликов (награда – 5000 кликов){" "}
+              {!pffhand && (
+                <Button
+                  onClick={() => taskup(pfhand, 5000, 10000)}
+                >
+                  Выполнить
+                </Button>
+              )}
+            </li>
           </ul>
         </div>
       )}
@@ -224,6 +306,7 @@ export default function App() {
           </div>
         </div>
       )}
+      <div style={{ height: 100 + "px" }}></div>
       <nav>
         <span onClick={() => setPage(0)}>
           <FaHome />
