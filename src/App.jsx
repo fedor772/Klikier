@@ -10,7 +10,7 @@ import {
 } from "react-icons/fa";
 import { Button, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useCookies } from "react-cookie";
+// Removed: import { useCookies } from "react-cookie";
 import axios from "axios";
 import { snackbar } from "mdui/functions/snackbar.js";
 import "mdui/mdui.css";
@@ -19,7 +19,7 @@ export default function App() {
   const [count, setCount] = useState(0);
   const [strong, setStrong] = useState(200);
   const [page, setPage] = useState(0);
-  const [cookies, setCookie, removeCookie] = useCookies(["cookie-youname"]);
+  // Removed: const [cookies, setCookie, removeCookie] = useCookies(["cookie-youname"]);
   const [youname, setYouname] = useState("Анонимный пользователь");
   const [uid, setUid] = useState(0);
   const [open, setOpen] = useState(true);
@@ -33,20 +33,31 @@ export default function App() {
     "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
 
   useEffect(() => {
-    if (cookies.count) {
-      setCount(cookies.count + 1);
-      setUid(cookies.uid ? cookies.uid : 0);
+    const storedCount = localStorage.getItem("count");
+    const storedStrong = localStorage.getItem("strong");
+    const storedYouname = localStorage.getItem("youname");
+    const storedUid = localStorage.getItem("uid");
+    const storedOffchan = localStorage.getItem("offchan") === "true";
+    const storedDsserv = localStorage.getItem("dsserv") === "true";
+    const storedDoptg = localStorage.getItem("doptg") === "true";
+    const storedPhand = localStorage.getItem("phand") === "true";
+    const storedPfhand = localStorage.getItem("pfhand") === "true";
+    const storedPffhand = localStorage.getItem("pffhand") === "true";
+
+    if (storedCount) {
+      setCount(parseInt(storedCount) + 1);
+      setUid(storedUid ? parseInt(storedUid) : 0);
     } else {
       confsUid();
     }
-    setStrong(cookies.strong ? cookies.strong - 1 : 200);
-    setYouname(cookies.youname ? cookies.youname : "Анонимный пользователь");
-    setOffchan(cookies.offchan);
-    setDsserv(cookies.dsserv);
-    setDoptg(cookies.doptg);
-    setPhand(cookies.phand);
-    setPfhand(cookies.pfhand);
-    setPffhand(cookies.pffhand);
+    setStrong(storedStrong ? parseInt(storedStrong) - 1 : 200);
+    setYouname(storedYouname ? storedYouname : "Анонимный пользователь");
+    setOffchan(storedOffchan);
+    setDsserv(storedDsserv);
+    setDoptg(storedDoptg);
+    setPhand(storedPhand);
+    setPfhand(storedPfhand);
+    setPffhand(storedPffhand);
   }, []);
 
   useEffect(() => {
@@ -68,7 +79,7 @@ export default function App() {
 
   useEffect(() => {
     console.log(uid);
-    if (!cookies.count && uid !== 0) {
+    if (!localStorage.getItem("count") && uid !== 0) {
       setCount(0);
       confUid(uid);
     }
@@ -96,7 +107,7 @@ export default function App() {
     getUid().then((result) => {
       setUid(result);
       if (open) {
-        setCookie("uid", result);
+        localStorage.setItem("uid", result);
       }
     });
   }
@@ -105,7 +116,7 @@ export default function App() {
     const strongInterval = setInterval(() => {
       if (strong < 200) {
         setStrong((prevStrong) => prevStrong + 1);
-        setCookie("strong", strong);
+        localStorage.setItem("strong", strong);
       }
     }, 10000);
     return () => clearInterval(strongInterval);
@@ -115,8 +126,8 @@ export default function App() {
     if (strong > 0) {
       setCount(count + 1);
       setStrong(strong - 1);
-      setCookie("count", count);
-      setCookie("strong", strong);
+      localStorage.setItem("count", count);
+      localStorage.setItem("strong", strong);
     } else {
       snackbar({ message: "Недостаточно силы" });
     }
@@ -125,34 +136,34 @@ export default function App() {
   function asksave() {
     let localname = prompt("Введите своё имя");
     setYouname(localname);
-    setCookie("youname", localname);
+    localStorage.setItem("youname", localname);
   }
 
   function reset() {
     let confirmname = prompt("Введите имя, которое у вас указано в профиле");
     if (confirmname == youname) {
-      removeCookie("uid");
-      removeCookie("count");
-      removeCookie("strong");
-      removeCookie("youname");
-      removeCookie("offchan");
-      removeCookie("dsserv");
-      removeCookie("doptg");
-      removeCookie("phand");
-      removeCookie("pfhand");
-      removeCookie("pffhand");
+      localStorage.removeItem("uid");
+      localStorage.removeItem("count");
+      localStorage.removeItem("strong");
+      localStorage.removeItem("youname");
+      localStorage.removeItem("offchan");
+      localStorage.removeItem("dsserv");
+      localStorage.removeItem("doptg");
+      localStorage.removeItem("phand");
+      localStorage.removeItem("pfhand");
+      localStorage.removeItem("pffhand");
       window.location.reload();
     }
   }
 
   function subscribe(times, url) {
-    setCookie("count", count + times);
+    localStorage.setItem("count", parseInt(localStorage.getItem("count")) + times);
     window.location = url;
   }
 
   function taskup(hand, times, needs) {
-    if (count >= needs) {
-      setCookie(hand, true);
+    if (parseInt(localStorage.getItem("count")) >= needs) {
+      localStorage.setItem(hand, true);
       window.location.reload();
       subscribe(times, "");
     } else {
@@ -195,7 +206,7 @@ export default function App() {
               {!offchan && (
                 <Button
                   onClick={() => {
-                    setCookie("offchan", true);
+                    localStorage.setItem("offchan", true);
                     window.location.reload();
                     subscribe(50, "https://t.me/rcoinoff");
                   }}
@@ -209,7 +220,7 @@ export default function App() {
               {!dsserv && (
                 <Button
                   onClick={() => {
-                    setCookie("dsserv", true);
+                    localStorage.setItem("dsserv", true);
                     window.location.reload();
                     subscribe(50, "https://discord.com/invite/wMtjyJ2y");
                   }}
@@ -224,7 +235,7 @@ export default function App() {
               {!doptg && (
                 <Button
                   onClick={() => {
-                    setCookie("doptg", true);
+                    localStorage.setItem("doptg", true);
                     window.location.reload();
                     subscribe(25, "https://t.me/almazniy_golub");
                   }}
