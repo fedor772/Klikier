@@ -21,7 +21,6 @@
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 1px 1px 15px #363636;
-  user-select: none;
 }
 
 .mainbutton:active {
@@ -31,7 +30,7 @@
 }
 
 .stats {
-  padding: 30px;
+  padding: 10px 30px;
   display: flex;
   justify-content: space-between;
 }
@@ -84,4 +83,5 @@ li {
   height: 0.5px;
   background-color: white;
   border-radius: 50px;
+  opacity: 50%;
 }

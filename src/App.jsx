@@ -187,9 +187,6 @@ export default function App() {
           Монеты<br />{count}
         </span>
         <span>
-          За 1 клик<br />{times}
-        </span>
-        <span>
           Сила<br />{strong}
         </span>
       </div>
@@ -200,6 +197,7 @@ export default function App() {
     <main>
       {page === 0 && (
         <div className="home-page">
+          <div style={{ height: 20 + "px" }}></div>
           <Stats />
           <img
             src="/Klikier/coin.png"
@@ -293,6 +291,17 @@ export default function App() {
       {page === 2 && (
         <div className="shop-page">
           <h2 style={{ margin: 10 + "px" }}>Магазин</h2>
+          <div className="divader"></div>
+          <div className="stats">Ваша текущая статистика:</div>
+          <Stats />
+          <div className="stats">
+            <span>
+              За 1 клик<br />{times}
+            </span>
+            <span>
+              Максимальная сила<br />{maxtore}
+            </span>
+          </div>
           <div className="divader"></div>
           <ul>
             <li>
