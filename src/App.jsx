@@ -53,6 +53,9 @@ export default function App() {
     if (storedCount) {
       setCount(parseInt(storedCount) + 1);
       setUid(storedUid ? parseInt(storedUid) : 0);
+      if (!uid) {
+        confsUid();
+      }
     } else {
       confsUid();
     }
