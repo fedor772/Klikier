@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import {
   FaHome,
   FaTasks,
-  FaUserFriends,
   FaAddressCard,
   FaEdit,
   FaRegWindowClose,
+  FaHotel,
 } from "react-icons/fa";
 import { Button, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -27,6 +27,7 @@ export default function App() {
   const [phand, setPhand] = useState(false);
   const [pfhand, setPfhand] = useState(false);
   const [pffhand, setPffhand] = useState(false);
+  const [times, setTimes] = useState(1);
   const server =
     "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
 
@@ -35,6 +36,7 @@ export default function App() {
     const storedStrong = localStorage.getItem("strong");
     const storedYouname = localStorage.getItem("youname");
     const storedUid = localStorage.getItem("uid");
+    const storedTimes = localStorage.getItem("times");
     const storedOffchan = localStorage.getItem("offchan") === "true";
     const storedDsserv = localStorage.getItem("dsserv") === "true";
     const storedDoptg = localStorage.getItem("doptg") === "true";
@@ -56,6 +58,7 @@ export default function App() {
     setPhand(storedPhand);
     setPfhand(storedPfhand);
     setPffhand(storedPffhand);
+    setTimes(storedTimes ? parseInt(storedTimes) : 1);
   }, []);
 
   useEffect(() => {
@@ -122,8 +125,8 @@ export default function App() {
 
   function handleClick() {
     if (strong > 0) {
-      setCount(count + 1);
-      setStrong(strong - 1);
+      setCount(count + times);
+      setStrong(strong - times);
       localStorage.setItem("count", count);
       localStorage.setItem("strong", strong);
     } else {
@@ -140,22 +143,16 @@ export default function App() {
   function reset() {
     let confirmname = prompt("Введите имя, которое у вас указано в профиле");
     if (confirmname == youname) {
-      localStorage.removeItem("uid");
-      localStorage.removeItem("count");
-      localStorage.removeItem("strong");
-      localStorage.removeItem("youname");
-      localStorage.removeItem("offchan");
-      localStorage.removeItem("dsserv");
-      localStorage.removeItem("doptg");
-      localStorage.removeItem("phand");
-      localStorage.removeItem("pfhand");
-      localStorage.removeItem("pffhand");
+      localStorage.clear();
       window.location.reload();
     }
   }
 
   function subscribe(times, url) {
-    localStorage.setItem("count", parseInt(localStorage.getItem("count")) + times);
+    localStorage.setItem(
+      "count",
+      parseInt(localStorage.getItem("count")) + times,
+    );
     window.location = url;
   }
 
@@ -245,9 +242,7 @@ export default function App() {
             <li>
               Набрать 1000 кликов (награда – 100 кликов){" "}
               {!phand && (
-                <Button
-                  onClick={()  => taskup("phand", 100, 1000)}
-                >
+                <Button onClick={() => taskup("phand", 100, 1000)}>
                   Выполнить
                 </Button>
               )}
@@ -255,9 +250,7 @@ export default function App() {
             <li>
               Набрать 5000 кликов (награда – 1000 кликов){" "}
               {!pfhand && (
-                <Button
-                  onClick={() => taskup("pfhand", 1000, 5000)}
-                >
+                <Button onClick={() => taskup("pfhand", 1000, 5000)}>
                   Выполнить
                 </Button>
               )}
@@ -265,9 +258,7 @@ export default function App() {
             <li>
               Набрать 10000 кликов (награда – 5000 кликов){" "}
               {!pffhand && (
-                <Button
-                  onClick={() => taskup(pfhand, 5000, 10000)}
-                >
+                <Button onClick={() => taskup(pfhand, 5000, 10000)}>
                   Выполнить
                 </Button>
               )}
@@ -282,7 +273,28 @@ export default function App() {
     }
     `}
       </style>
-      {page === 2 && <div className="friends-page">Страница друзей</div>}
+      {page === 2 && (
+        <div className="shop-page">
+          <h2 style={{ margin: 10 + "px" }}>Магазин</h2>
+          <div className="divader"></div>
+          <ul>
+            <li>
+              Улучшить количество монет за один клик <br /> Цена: 500 монет{" "}
+              <Button
+                onClick={() => {
+                  if (count > 500) {
+                    localStorage.setItem("count", count - 500);
+                    localStorage.setItem("times", times + 1);
+                    window.location.reload();
+                  }
+                }}
+              >
+                Выполнить
+              </Button>
+            </li>
+          </ul>
+        </div>
+      )}
       {page === 3 && (
         <div className="profile-page">
           <div className="container">
@@ -332,8 +344,8 @@ export default function App() {
           )}
         </span>
         <span onClick={() => setPage(2)}>
-          <FaUserFriends />
-          <span className="label">Друзья</span>
+          <FaHotel />
+          <span className="label">Магазин</span>
           {page === 2 && (
             <div style={{ width: 50 + "px" }} className="primary"></div>
           )}

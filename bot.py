@@ -1,7 +1,8 @@
 from telebot import TeleBot, types
 import threading
+import os
 
-bot = TeleBot(open("key.config", "r").read())
+bot = TeleBot(os.environ['Telegram'])
 
 @bot.message_handler(commands=['start'])
 def url(message):
