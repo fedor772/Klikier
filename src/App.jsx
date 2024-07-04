@@ -28,6 +28,9 @@ export default function App() {
   const [pfhand, setPfhand] = useState(false);
   const [pffhand, setPffhand] = useState(false);
   const [times, setTimes] = useState(1);
+  const [bett, setBett] = useState(100);
+  const [bets, setBets] = useState(75);
+  const [maxtore, setMaxtore] = useState(200);
   const server =
     "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
 
@@ -37,6 +40,9 @@ export default function App() {
     const storedYouname = localStorage.getItem("youname");
     const storedUid = localStorage.getItem("uid");
     const storedTimes = localStorage.getItem("times");
+    const storedBett = localStorage.getItem("bett");
+    const storedBets = localStorage.getItem("bets");
+    const storedMaxtore = localStorage.getItem("maxtore");
     const storedOffchan = localStorage.getItem("offchan") === "true";
     const storedDsserv = localStorage.getItem("dsserv") === "true";
     const storedDoptg = localStorage.getItem("doptg") === "true";
@@ -50,7 +56,7 @@ export default function App() {
     } else {
       confsUid();
     }
-    setStrong(storedStrong ? parseInt(storedStrong) - 1 : 200);
+    setStrong(storedStrong ? parseInt(storedStrong) : 200);
     setYouname(storedYouname ? storedYouname : "Анонимный пользователь");
     setOffchan(storedOffchan);
     setDsserv(storedDsserv);
@@ -59,6 +65,9 @@ export default function App() {
     setPfhand(storedPfhand);
     setPffhand(storedPffhand);
     setTimes(storedTimes ? parseInt(storedTimes) : 1);
+    setBett(storedBett ? parseInt(storedBett) : 100);
+    setBets(storedBets ? parseInt(storedBets) : 75);
+    setMaxtore(storedMaxtore ? parseInt(storedMaxtore) : 200);
   }, []);
 
   useEffect(() => {
@@ -115,7 +124,7 @@ export default function App() {
 
   useEffect(() => {
     const strongInterval = setInterval(() => {
-      if (strong < 200) {
+      if (strong < maxtore) {
         setStrong((prevStrong) => prevStrong + 1);
         localStorage.setItem("strong", strong);
       }
@@ -145,6 +154,8 @@ export default function App() {
     if (confirmname == youname) {
       localStorage.clear();
       window.location.reload();
+    } else {
+      snackbar({ message: "Вы ввели неправильное имя" });
     }
   }
 
@@ -162,7 +173,7 @@ export default function App() {
       window.location.reload();
       subscribe(times, "");
     } else {
-      snackbar({ message: "Недостаточно кликов для получения награды" });
+      snackbar({ message: "Недостаточно монет для получения награды" });
     }
   }
 
@@ -170,10 +181,13 @@ export default function App() {
     return (
       <div className="stats">
         <span>
-          Ваши клики <br /> {count}
+          Монеты<br />{count}
         </span>
         <span>
-          Ваша сила <br /> {strong}
+          За 1 клик<br />{times}
+        </span>
+        <span>
+          Сила<br />{strong}
         </span>
       </div>
     );
@@ -279,13 +293,33 @@ export default function App() {
           <div className="divader"></div>
           <ul>
             <li>
-              Улучшить количество монет за один клик <br /> Цена: 500 монет{" "}
+              Улучшить на 1 количество монет за один клик <br /> Цена: {bett} монет{" "}
               <Button
                 onClick={() => {
-                  if (count > 500) {
-                    localStorage.setItem("count", count - 500);
+                  if (count >= bett) {
+                    localStorage.setItem("count", count - bett);
                     localStorage.setItem("times", times + 1);
+                    localStorage.setItem("bett", bett + 100);
                     window.location.reload();
+                  } else {
+                    snackbar({ message: "Недостаточно монет для улучшения" });
+                  }
+                }}
+              >
+                Выполнить
+              </Button>
+            </li>
+            <li>
+              Улучшить на 100 максимальную силу за один клик <br /> Цена: {bets} монет{" "}
+              <Button
+                onClick={() => {
+                  if (count >= bets) {
+                    localStorage.setItem("count", count - bets);
+                    localStorage.setItem("maxtore", maxtore + 100);
+                    localStorage.setItem("bets", bett + 75);
+                    window.location.reload();
+                  } else {
+                    snackbar({ message: "Недостаточно монет для улучшения" });
                   }
                 }}
               >
