@@ -11,8 +11,8 @@ import {
 import { Button, Alert, ProgressBar } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
+import { snackbar } from 'mdui';
 import "mdui/mdui.css";
-import "mdui";
 
 export default function App() {
   const [count, setCount] = useState(0);
