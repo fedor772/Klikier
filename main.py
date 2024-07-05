@@ -31,7 +31,7 @@ def getinfo():
     try:
         uid = request.args.get('uid')
         if uid in db:
-            return db[uid]  # Return the dictionary directly
+            return db[uid]
         else:
             return "Информация не найдена"
     except Exception as e:
