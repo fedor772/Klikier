@@ -138,7 +138,7 @@ export default function App() {
   function handleClick() {
     if (strong > 0) {
       setCount(count + times);
-      setStrong(strong - times);
+      setStrong(strong - times > 0 ? strong - times : 0);
       localStorage.setItem("count", count);
       localStorage.setItem("strong", strong);
     } else {
