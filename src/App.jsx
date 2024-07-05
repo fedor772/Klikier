@@ -8,11 +8,11 @@ import {
   FaRegWindowClose,
   FaHotel,
 } from "react-icons/fa";
-import { Button, Alert } from "react-bootstrap";
+import { Button, Alert, ProgressBar } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
-import { snackbar } from "mdui/functions/snackbar.js";
 import "mdui/mdui.css";
+import "mdui";
 
 export default function App() {
   const [count, setCount] = useState(0);
@@ -184,10 +184,14 @@ export default function App() {
     return (
       <div className="stats">
         <span>
-          Монеты<br />{count}
+          Монеты
+          <br />
+          {count}
         </span>
         <span>
-          Сила<br />{strong}
+          Сила
+          <br />
+          {strong}
         </span>
       </div>
     );
@@ -296,16 +300,21 @@ export default function App() {
           <Stats />
           <div className="stats">
             <span>
-              За 1 клик<br />{times}
+              За 1 клик
+              <br />
+              {times}
             </span>
             <span>
-              Максимальная сила<br />{maxtore}
+              Максимальная сила
+              <br />
+              {maxtore}
             </span>
           </div>
           <div className="divader"></div>
           <ul>
             <li>
-              Улучшить на 1 количество монет за один клик <br /> Цена: {bett} монет{" "}
+              Улучшить на 1 количество монет за один клик <br /> Цена: {bett}{" "}
+              монет{" "}
               <Button
                 onClick={() => {
                   if (count >= bett) {
@@ -322,7 +331,8 @@ export default function App() {
               </Button>
             </li>
             <li>
-              Улучшить на 100 максимальную силу за один клик <br /> Цена: {bets} монет{" "}
+              Улучшить на 100 максимальную силу за один клик <br /> Цена: {bets}{" "}
+              монет{" "}
               <Button
                 onClick={() => {
                   if (count >= bets) {
@@ -344,15 +354,20 @@ export default function App() {
       {page === 3 && (
         <div className="profile-page">
           <div className="container">
-            <img
-              src="/Klikier/person.png"
+            <mdui-avatar
               style={{ width: 100 + "px", height: 100 + "px" }}
-            />
+              src="Klikier/person.png"
+            ></mdui-avatar>
             <h2 className="youname">{youname}</h2>
             <Button onClick={asksave}>
               Изменить <FaEdit />
             </Button>
             <Stats />
+            <ProgressBar
+              now={strong}
+              max={maxtore}
+              style={{ marginBottom: 20 + "px" }}
+            />
             {open && <div>Ваш uid: {uid}</div>}
             {!open && (
               <Alert variant="danger">
