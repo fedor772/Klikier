@@ -32,9 +32,13 @@ def start():
             if e.error_code == 409:
                 print("Ошибка 409, продолжаем работу через 5 секунд")
                 time.sleep(5)
+            elif e.error_code == 429:
+                print("Ошибка 429: Слишком много запросов. Ожидание 10 секунд.")
+                time.sleep(10)
             else:
-                raise e
-                    
+                print(f"Ошибка API: {e.error_code} - {e.description}")
+                time.sleep(5)
+
 if __name__ == '__main__':
     bot_thread = threading.Thread(target=start)
     bot_thread.start()
