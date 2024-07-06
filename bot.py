@@ -27,7 +27,7 @@ def start():
         exit()
     while True:
         try:
-            bot.polling(none_stop=True, interval=0)
+            bot.infinity_polling(none_stop=True)
         except ApiTelegramException as e:
             if e.error_code == 409:
                 print("Ошибка 409, продолжаем работу через 5 секунд")
