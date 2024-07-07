@@ -8,6 +8,7 @@ import {
   FaRegWindowClose,
   FaHotel,
   FaAngleRight,
+  FaRedo,
 } from "react-icons/fa";
 import { Button, Alert, ProgressBar, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -398,14 +399,18 @@ export default function App() {
                 нашу техподдержку
               </Alert>
             )}
-            <Button
-              variant="danger"
-              className="reset"
-              style={{ margin: 20 + "px" }}
-              onClick={reset}
-            >
-              Сбросить весь прогресс <FaRegWindowClose />
-            </Button>
+            <div className="d-flex" style={{ margin: 20 + "px" }}>
+              <Button variant="danger" className="reset" onClick={reset}>
+                Сбросить весь прогресс <FaRegWindowClose />
+              </Button>
+              <div style={{ margin: 1 + "px" }}></div>
+              <Button
+                variant="success"
+                onClick={() => window.location.reload()}
+              >
+                <FaRedo />
+              </Button>
+            </div>
             <Form onSubmit={handleSubmit} className="d-flex">
               <Form.Control
                 type="text"
