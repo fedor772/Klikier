@@ -7,11 +7,12 @@ import {
   FaEdit,
   FaRegWindowClose,
   FaHotel,
+  FaAngleRight,
 } from "react-icons/fa";
-import { Button, Alert, ProgressBar } from "react-bootstrap";
+import { Button, Alert, ProgressBar, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
-import { snackbar } from 'mdui';
+import { snackbar } from "mdui";
 import "mdui/mdui.css";
 
 export default function App() {
@@ -31,6 +32,8 @@ export default function App() {
   const [bett, setBett] = useState(100);
   const [bets, setBets] = useState(75);
   const [maxtore, setMaxtore] = useState(200);
+  const [code, setCode] = useState("");
+  const [respromo, setRespromo] = useState("");
   const server =
     "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
 
@@ -178,6 +181,23 @@ export default function App() {
     } else {
       snackbar({ message: "Недостаточно монет для получения награды" });
     }
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    const promodata = {
+      code: code,
+    };
+    axios
+      .post(`${server}promo`, promodata)
+      .then((response) => {
+        console.log(response.data);
+        setRespromo(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+        setRespromo(error);
+      });
   }
 
   function Stats() {
@@ -366,6 +386,7 @@ export default function App() {
             <ProgressBar
               now={strong}
               max={maxtore}
+              data-bs-theme="dark"
               style={{ marginBottom: 20 + "px" }}
             />
             {open && <div>Ваш uid: {uid}</div>}
@@ -380,11 +401,23 @@ export default function App() {
             <Button
               variant="danger"
               className="reset"
-              style={{ marginTop: 20 + "px" }}
+              style={{ margin: 20 + "px" }}
               onClick={reset}
             >
               Сбросить весь прогресс <FaRegWindowClose />
             </Button>
+            <Form onSubmit={handleSubmit} className="d-flex">
+              <Form.Control
+                type="text"
+                placeholder="Введите промокод"
+                data-bs-theme="dark"
+                onChange={(e) => setCode(e.target.value)}
+              />
+              <Button variant="secondary" type="submit">
+                <FaAngleRight />
+              </Button>
+            </Form>
+            <div>{respromo}</div>
           </div>
         </div>
       )}

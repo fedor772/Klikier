@@ -62,6 +62,38 @@ def index():
         uid = None
     return str(uid)
 
+def apply_promo(code):
+  if code in db:
+    print("Промокод успешно применён")
+    return True
+  else:
+    print("Не правильный промокод")
+    return False
+
+@app.route('/promo', methods=['POST'])
+def promo():
+    try:
+        data = request.get_json()
+        code = data.get('code')
+        if apply_promo(code):
+            return "Промокод успешно применён"
+        else:
+            return "Промокод не найден"
+    except Exception as e:
+        print(f"Ошибка применения промокода: {str(e)}")
+        return "Ошибка применения промокода", 500
+
+@app.route('/addpromo', methods=['POST'])
+def addpromo():
+    try:
+        data = request.get_json()
+        code = data.get('code')
+        db[code] = code
+        print("Промокод добавлен:", code)
+        return "Успешно"
+    except Exception as e:
+        print(f"Ошибка при добавлении промокода: {str(e)}")
+        return "Ошибка: возникла проблема с добавлением промокода", 500
 
 def run_bot():
     os.system("python bot.py")
