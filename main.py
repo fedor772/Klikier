@@ -75,10 +75,17 @@ def promo():
     try:
         data = request.get_json()
         code = data.get('code')
+        promouid = data.get('uid')
+        if code.isdigit():
+            return "Промокод не должен состоять из одних чисел"
         if apply_promo(code):
-            return "Промокод успешно применён"
+            if db[code] == promouid:
+                return "Вы не можете применить свой же промокод"
+            else:
+                del db[code]
+                return "Успешно"
         else:
-            return "Промокод не найден"
+            return "Промокод не найден или был применён до этого"
     except Exception as e:
         print(f"Ошибка применения промокода: {str(e)}")
         return "Ошибка применения промокода", 500
@@ -88,7 +95,12 @@ def addpromo():
     try:
         data = request.get_json()
         code = data.get('code')
-        db[code] = code
+        adduid = data.get('uid')
+        if code.isdigit():
+            return "Промокод не должен состоять из одних чисел"
+        if code in db:
+            return "Промокод уже существует"
+        db[code] = adduid
         print("Промокод добавлен:", code)
         return "Успешно"
     except Exception as e:

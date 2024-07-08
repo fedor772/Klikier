@@ -21,11 +21,13 @@
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 1px 1px 15px #363636;
+  border: 1px inset #3b3b3b;
 }
 
 .mainbutton:active {
   box-shadow: 1px 1px 10px #363636;
   margin-top: 1px;
+  border: 1px outset #3b3b3b;
   transition: box-shadow 0.1s ease-in-out;
 }
 

@@ -9,6 +9,7 @@ import {
   FaHotel,
   FaAngleRight,
   FaRedo,
+  FaCode,
 } from "react-icons/fa";
 import { Button, Alert, ProgressBar, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -34,7 +35,9 @@ export default function App() {
   const [bets, setBets] = useState(75);
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
+  const [codeadd, setCodeadd] = useState("");
   const [respromo, setRespromo] = useState("");
+  const [respromoadd, setRespromoadd] = useState("");
   const server =
     "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
 
@@ -57,7 +60,7 @@ export default function App() {
     if (storedCount) {
       setCount(parseInt(storedCount) + 1);
       setUid(storedUid ? parseInt(storedUid) : 0);
-      if (!uid) {
+      if (isNaN(uid)) {
         confsUid();
       }
     } else {
@@ -124,7 +127,7 @@ export default function App() {
     getUid().then((result) => {
       setUid(result);
       if (open) {
-        localStorage.setItem("uid", result);
+        localStorage.setItem("uid", parseInt(result + 1));
       }
     });
   }
@@ -188,18 +191,41 @@ export default function App() {
     event.preventDefault();
     const promodata = {
       code: code,
+      uid: uid,
     };
     axios
       .post(`${server}promo`, promodata)
       .then((response) => {
         console.log(response.data);
         setRespromo(response.data);
+        if (response.data == "Успешно") {
+          localStorage.setItem("strong", strong + 50);
+          subscribe(100, "");
+        }
       })
       .catch((error) => {
         console.error(error);
         setRespromo(error);
       });
   }
+
+    function handleSubmitadd(event) {
+    event.preventDefault();
+    const promodata = {
+      code: codeadd,
+      uid: uid,
+    };
+    axios
+      .post(`${server}addpromo`, promodata)
+      .then((response) => {
+        console.log(response.data);
+        setRespromoadd(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+        setRespromoadd(error);
+      });
+    }
 
   function Stats() {
     return (
@@ -411,19 +437,41 @@ export default function App() {
                 <FaRedo />
               </Button>
             </div>
-            <Form onSubmit={handleSubmit} className="d-flex">
-              <Form.Control
-                type="text"
-                placeholder="Введите промокод"
-                data-bs-theme="dark"
-                onChange={(e) => setCode(e.target.value)}
-              />
-              <Button variant="secondary" type="submit">
-                <FaAngleRight />
-              </Button>
-            </Form>
-            <div>{respromo}</div>
           </div>
+        </div>
+      )}
+      {page === 4 && (
+        <div className="promo-page">
+          <h2 style={{ margin: 10 + "px" }}>Промокоды</h2>
+          <div className="divader"></div>
+          <div>Применить промокод</div>
+          <Form onSubmit={handleSubmit} className="d-flex">
+            <Form.Control
+              type="text"
+              placeholder="Введите промокод"
+              data-bs-theme="dark"
+              onChange={(e) => setCode(e.target.value)}
+            />
+            <Button variant="secondary" type="submit">
+              <FaAngleRight />
+            </Button>
+          </Form>
+          <div>{respromo}</div>
+          <div style={{ margin: 25 + "px" }}></div>
+          <div>Создать свой промокод</div>
+          <Form onSubmit={handleSubmitadd} className="d-flex">
+            <Form.Control
+              type="text"
+              placeholder="Введите промокод"
+              data-bs-theme="dark"
+              onChange={(e) => setCodeadd(e.target.value)}
+            />
+            <Button variant="secondary" type="submit">
+              <FaAngleRight />
+            </Button>
+          </Form>
+          <div>{respromoadd}</div>
+          <div style={{ margin: 15 + "px" }}>Все промокоды после применения дают 100 монет и 50 силы</div>
         </div>
       )}
       <div style={{ height: 100 + "px" }}></div>
@@ -453,6 +501,13 @@ export default function App() {
           <FaAddressCard />
           <span className="label">Профиль</span>
           {page === 3 && (
+            <div style={{ width: 50 + "px" }} className="primary"></div>
+          )}
+        </span>
+        <span onClick={() => setPage(4)}>
+          <FaCode />
+          <span className="label">Промокоды</span>
+          {page === 4 && (
             <div style={{ width: 50 + "px" }} className="primary"></div>
           )}
         </span>
