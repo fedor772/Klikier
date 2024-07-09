@@ -8,6 +8,7 @@ import threading
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route('/addinfo', methods=['POST'])
 def addinfo():
     try:
@@ -62,13 +63,15 @@ def index():
         uid = None
     return str(uid)
 
+
 def apply_promo(code):
-  if code in db:
-    print("Промокод успешно применён")
-    return True
-  else:
-    print("Не правильный промокод")
-    return False
+    if code in db:
+        print("Промокод успешно применён")
+        return True
+    else:
+        print("Не правильный промокод")
+        return False
+
 
 @app.route('/promo', methods=['POST'])
 def promo():
@@ -81,14 +84,17 @@ def promo():
         if apply_promo(code):
             if db[code] == promouid:
                 return "Вы не можете применить свой же промокод"
+            elif db[code] == "del":
+                return "Промокод был применён до этого"
             else:
-                del db[code]
+                db[code] = "del"
                 return "Успешно"
         else:
-            return "Промокод не найден или был применён до этого"
+            return "Промокод не найден"
     except Exception as e:
         print(f"Ошибка применения промокода: {str(e)}")
         return "Ошибка применения промокода", 500
+
 
 @app.route('/addpromo', methods=['POST'])
 def addpromo():
@@ -107,8 +113,10 @@ def addpromo():
         print(f"Ошибка при добавлении промокода: {str(e)}")
         return "Ошибка: возникла проблема с добавлением промокода", 500
 
+
 def run_bot():
     os.system("python bot.py")
+
 
 if __name__ == '__main__':
     bot_thread = threading.Thread(target=run_bot)
