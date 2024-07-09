@@ -9,7 +9,6 @@ import {
   FaHotel,
   FaAngleRight,
   FaRedo,
-  FaCode,
 } from "react-icons/fa";
 import { Button, Alert, ProgressBar, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -208,24 +207,6 @@ export default function App() {
         setRespromo(error);
       });
   }
-
-    function handleSubmitadd(event) {
-    event.preventDefault();
-    const promodata = {
-      code: codeadd,
-      uid: uid,
-    };
-    axios
-      .post(`${server}addpromo`, promodata)
-      .then((response) => {
-        console.log(response.data);
-        setRespromoadd(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-        setRespromoadd(error);
-      });
-    }
 
   function Stats() {
     return (
@@ -437,41 +418,19 @@ export default function App() {
                 <FaRedo />
               </Button>
             </div>
+            <Form onSubmit={handleSubmit} className="d-flex">
+              <Form.Control
+                type="text"
+                placeholder="Введите промокод"
+                data-bs-theme="dark"
+                onChange={(e) => setCode(e.target.value)}
+              />
+              <Button variant="secondary" type="submit">
+                <FaAngleRight />
+              </Button>
+            </Form>
+            <div>{respromo}</div>
           </div>
-        </div>
-      )}
-      {page === 4 && (
-        <div className="promo-page">
-          <h2 style={{ margin: 10 + "px" }}>Промокоды</h2>
-          <div className="divader"></div>
-          <div>Применить промокод</div>
-          <Form onSubmit={handleSubmit} className="d-flex">
-            <Form.Control
-              type="text"
-              placeholder="Введите промокод"
-              data-bs-theme="dark"
-              onChange={(e) => setCode(e.target.value)}
-            />
-            <Button variant="secondary" type="submit">
-              <FaAngleRight />
-            </Button>
-          </Form>
-          <div>{respromo}</div>
-          <div style={{ margin: 25 + "px" }}></div>
-          <div>Создать свой промокод</div>
-          <Form onSubmit={handleSubmitadd} className="d-flex">
-            <Form.Control
-              type="text"
-              placeholder="Введите промокод"
-              data-bs-theme="dark"
-              onChange={(e) => setCodeadd(e.target.value)}
-            />
-            <Button variant="secondary" type="submit">
-              <FaAngleRight />
-            </Button>
-          </Form>
-          <div>{respromoadd}</div>
-          <div style={{ margin: 15 + "px" }}>Все промокоды после применения дают 100 монет и 50 силы</div>
         </div>
       )}
       <div style={{ height: 100 + "px" }}></div>
@@ -501,13 +460,6 @@ export default function App() {
           <FaAddressCard />
           <span className="label">Профиль</span>
           {page === 3 && (
-            <div style={{ width: 50 + "px" }} className="primary"></div>
-          )}
-        </span>
-        <span onClick={() => setPage(4)}>
-          <FaCode />
-          <span className="label">Промокоды</span>
-          {page === 4 && (
             <div style={{ width: 50 + "px" }} className="primary"></div>
           )}
         </span>
