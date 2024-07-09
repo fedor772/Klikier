@@ -117,8 +117,12 @@ def addpromo():
 def run_bot():
     os.system("python bot.py")
 
+def run_admin():
+    os.system("python admin.py")
 
 if __name__ == '__main__':
     bot_thread = threading.Thread(target=run_bot)
     bot_thread.start()
+    admin_thread = threading.Thread(target=run_admin)
+    admin_thread.start()
     app.run(debug=True)
