@@ -34,11 +34,8 @@ export default function App() {
   const [bets, setBets] = useState(75);
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
-  const [codeadd, setCodeadd] = useState("");
   const [respromo, setRespromo] = useState("");
-  const [respromoadd, setRespromoadd] = useState("");
-  const server =
-    "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
+  const server = import.meta.env.URL;
 
   useEffect(() => {
     const storedCount = localStorage.getItem("count");
