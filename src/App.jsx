@@ -84,7 +84,11 @@ export default function App() {
       youname: youname,
     };
     axios
-      .post(`${server}addinfo`, data)
+      .post(`${server}addinfo`, data, {
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      }
+    })
       .then((response) => {
         console.log(response.data);
       })
@@ -103,7 +107,11 @@ export default function App() {
 
   async function getUid() {
     try {
-      const response = await axios.get(server);
+      const response = await axios.get(server, {
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
       setOpen(true);
       return response.data;
     } catch (error) {
@@ -113,7 +121,11 @@ export default function App() {
   }
 
   function confUid(auid) {
-    axios.post(`${server}setuid/${parseInt(auid) + 1}`).then((response) => {
+    axios.post(`${server}setuid/${parseInt(auid) + 1}`, {
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      }
+    }).then((response) => {
       console.log(auid);
       console.log(response.data);
     });
@@ -168,7 +180,7 @@ export default function App() {
   function subscribe(times, url) {
     localStorage.setItem(
       "count",
-      parseInt(localStorage.getItem("count")) + times,
+      parseInt(localStorage.getItem("count")) + times
     );
     window.location = url;
   }
@@ -190,7 +202,11 @@ export default function App() {
       uid: uid,
     };
     axios
-      .post(`${server}promo`, promodata)
+      .post(`${server}promo`, promodata, {
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      })
       .then((response) => {
         console.log(response.data);
         setRespromo(response.data);

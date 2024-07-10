@@ -20,6 +20,7 @@
     "@vite-pwa/assets-generator": "^0.2.4",
     "@vitejs/plugin-react": "^4.3.1",
     "gh-pages": "^6.1.1",
+    "prettier": "3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^5.2.2",
@@ -28,6 +29,7 @@
   "dependencies": {
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
+    "cors": "^2.8.5",
     "mdui": "^2.1.1",
     "primereact": "^10.6.6",
     "react-bootstrap": "^2.10.3",
