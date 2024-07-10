@@ -1,13 +1,26 @@
 import json
 from flask import Flask, request
 from flask_cors import CORS
-from replit import db
 import os
 import threading
 
 app = Flask(__name__)
 CORS(app)
 
+def load_data(file_name):
+    try:
+        with open(file_name, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        data = {}
+    return data
+
+def save_data(data, file_name):
+    with open(file_name, 'w') as file:
+        json.dump(data, file, indent=4)
+
+file_name = 'database.json'
+db = load_data(file_name)
 
 @app.route('/addinfo', methods=['POST'])
 def addinfo():
@@ -17,10 +30,9 @@ def addinfo():
         count = str(data.get('count'))
         strong = str(data.get('strong'))
         youname = str(data.get('youname'))
-        db[uid] = '{"uid": ' + str(uid) + ', "count": ' + str(
-            count) + ', "strong": ' + str(strong) + ', "youname": ' + str(
-                youname) + '}'
+        db[uid] = {"uid": str(uid), "count": str(count), "strong": str(strong), "youname": str(youname)}
         print("Информация добавлена:", db[uid])
+        save_data(db, file_name)
         return "Успешно"
     except Exception as e:
         print(f"Ошибка при добавлении информации: {str(e)}")
@@ -88,6 +100,7 @@ def promo():
                 return "Промокод был применён до этого"
             else:
                 db[code] = "del"
+                save_data(data, file_name)
                 return "Успешно"
         else:
             return "Промокод не найден"
@@ -107,6 +120,7 @@ def addpromo():
         if code in db:
             return "Промокод уже существует"
         db[code] = adduid
+        save_data(db, file_name)
         print("Промокод добавлен:", code)
         return "Успешно"
     except Exception as e:

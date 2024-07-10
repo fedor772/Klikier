@@ -6,6 +6,7 @@ __pycache__/
 # Configuration
 *.config
 data.json
+database.json
 
 # C extensions
 *.so
