@@ -140,16 +140,6 @@ export default function App() {
     });
   }
 
-  /*useEffect(() => {
-    const strongInterval = setInterval(() => {
-      if (strong < maxtore) {
-        setStrong((prevStrong) => prevStrong + 1);
-        localStorage.setItem("strong", strong);
-      }
-    }, 10000);
-    return () => clearInterval(strongInterval);
-  }, [strong]);*/
-
   function handleClick() {
     if (strong > 0) {
       setCount(count + times);

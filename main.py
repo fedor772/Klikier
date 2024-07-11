@@ -1,9 +1,22 @@
 import json
 from flask import Flask, request
 from flask_cors import CORS
+import threading
+import time
+import os
 
 app = Flask(__name__)
 CORS(app)
+
+def restore_strength():
+    while True:
+        for user_id in db:
+            user = db[user_id]
+            if int(user["strong"]) < 200:
+                user["strong"] = str(int(user["strong"]) + 1)
+                print(f"Сила пользователя {user_id} восстановлена: {user['strong']}")
+        save_data(db, file_name)
+        time.sleep(10)
 
 def load_data(file_name):
     try:
@@ -17,7 +30,7 @@ def save_data(data, file_name):
     with open(file_name, 'w') as file:
         json.dump(data, file, indent=4)
 
-file_name = '/data/database.json'
+file_name = "/data/database.json" if "AMVERA" in os.environ else "data/database.json"
 db = load_data(file_name)
 
 @app.route('/addinfo', methods=['POST'])
@@ -98,7 +111,7 @@ def promo():
                 return "Промокод был применён до этого"
             else:
                 db[code] = "del"
-                save_data(data, file_name)
+                save_data(db, file_name)
                 return "Успешно"
         else:
             return "Промокод не найден"
@@ -126,4 +139,6 @@ def addpromo():
         return "Ошибка: возникла проблема с добавлением промокода", 500
 
 if __name__ == '__main__':
+    restore_strength_thread = threading.Thread(target=restore_strength)
+    restore_strength_thread.start()
     app.run(debug=True)
