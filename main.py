@@ -1,8 +1,6 @@
 import json
 from flask import Flask, request
 from flask_cors import CORS
-import os
-import threading
 
 app = Flask(__name__)
 CORS(app)
@@ -19,7 +17,7 @@ def save_data(data, file_name):
     with open(file_name, 'w') as file:
         json.dump(data, file, indent=4)
 
-file_name = 'database.json'
+file_name = '/data/database.json'
 db = load_data(file_name)
 
 @app.route('/addinfo', methods=['POST'])
@@ -56,7 +54,7 @@ def getinfo():
 def setuid(uid):
     try:
         towrite = {"uid": uid}
-        with open("data.json", 'w') as f:
+        with open("/data/data.json", 'w') as f:
             json.dump(towrite, f)
         print("Новый uid зарегестрирован:", uid)
         return "Успешно"
@@ -67,7 +65,7 @@ def setuid(uid):
 @app.route('/')
 def index():
     try:
-        with open("data.json", "r") as rf:
+        with open("/data/data.json", "r") as rf:
             jsonfile = json.loads(rf.read())
             uid = jsonfile.get("uid")
     except FileNotFoundError:
@@ -127,16 +125,5 @@ def addpromo():
         print(f"Ошибка при добавлении промокода: {str(e)}")
         return "Ошибка: возникла проблема с добавлением промокода", 500
 
-
-def run_bot():
-    os.system("python bot.py")
-
-def run_admin():
-    os.system("python admin.py")
-
 if __name__ == '__main__':
-    bot_thread = threading.Thread(target=run_bot)
-    bot_thread.start()
-    admin_thread = threading.Thread(target=run_admin)
-    admin_thread.start()
     app.run(debug=True)

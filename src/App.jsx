@@ -35,7 +35,7 @@ export default function App() {
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
   const [respromo, setRespromo] = useState("");
-  const server = import.meta.env.URL;
+  const server = "https://rcoin-fedorr.amvera.io/";
 
   useEffect(() => {
     const storedCount = localStorage.getItem("count");
@@ -140,7 +140,7 @@ export default function App() {
     });
   }
 
-  useEffect(() => {
+  /*useEffect(() => {
     const strongInterval = setInterval(() => {
       if (strong < maxtore) {
         setStrong((prevStrong) => prevStrong + 1);
@@ -148,7 +148,7 @@ export default function App() {
       }
     }, 10000);
     return () => clearInterval(strongInterval);
-  }, [strong]);
+  }, [strong]);*/
 
   function handleClick() {
     if (strong > 0) {
