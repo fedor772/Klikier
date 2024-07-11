@@ -13,8 +13,12 @@ def restore_strength():
         for user_id in db:
             user = db[user_id]
             if int(user["strong"]) < 200:
-                user["strong"] = str(int(user["strong"]) + 1)
-                print(f"Сила пользователя {user_id} восстановлена: {user['strong']}")
+                if user["strong"] is not None:
+                    if int(user["strong"]) < 200:
+                        user["strong"] += 1 
+                        print(f"Сила пользователя {user_id} восстановлена: {user['strong']}")
+                    else:
+                        print(f"Сила пользователя {user_id} не инициализирована.")
         save_data(db, file_name)
         time.sleep(10)
 
@@ -49,6 +53,17 @@ def addinfo():
         print(f"Ошибка при добавлении информации: {str(e)}")
         return "Ошибка: возникла проблема с добавлением информации", 500
 
+@app.route('/getstrong', methods=['GET'])
+def getstrong():
+    try:
+        uid = request.args.get('uid')
+        if uid in db:
+            return str(db[uid]["strong"])
+        else:
+            return "Информация не найдена"
+    except Exception as e:
+        print(f"Ошибка при получении силы: {str(e)}")
+        return "Ошибка: возникла проблема с получением силы", 500
 
 @app.route('/getinfo', methods=['GET'])
 def getinfo():

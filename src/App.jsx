@@ -35,7 +35,7 @@ export default function App() {
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
   const [respromo, setRespromo] = useState("");
-  const server = "https://rcoin-fedorr.amvera.io/";
+  const server = "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
 
   useEffect(() => {
     const storedCount = localStorage.getItem("count");
@@ -70,10 +70,14 @@ export default function App() {
     setPhand(storedPhand);
     setPfhand(storedPfhand);
     setPffhand(storedPffhand);
-    setTimes(storedTimes ? parseInt(storedTimes) : 1);
-    setBett(storedBett ? parseInt(storedBett) : 100);
-    setBets(storedBets ? parseInt(storedBets) : 75);
-    setMaxtore(storedMaxtore ? parseInt(storedMaxtore) : 200);
+    setTimes(storedTimes ? parseInt(storedTimes) : times);
+    setBett(storedBett ? parseInt(storedBett) : bett);
+    setBets(storedBets ? parseInt(storedBets) : bets);
+    setMaxtore(storedMaxtore ? parseInt(storedMaxtore) : maxtore);
+    const intervalId = setInterval(() => {
+      setStrong(getStrong());
+    }, 10000);
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -116,6 +120,19 @@ export default function App() {
       return response.data;
     } catch (error) {
       setOpen(false);
+      return error;
+    }
+  }
+
+  function getStrong() {
+    try {
+      const response = axios.get(`${server}getstrong?uid=${uid}`, {
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
+      return response.data;
+    } catch (error) {
       return error;
     }
   }
