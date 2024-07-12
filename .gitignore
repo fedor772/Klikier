@@ -8,7 +8,7 @@ __pycache__/
 data.json
 database.json
 .env
-
+.main.py.3909194079~
 
 # C extensions
 *.so
