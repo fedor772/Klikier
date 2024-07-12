@@ -12,13 +12,15 @@ def restore_strength():
     while True:
         for user_id in db:
             user = db[user_id]
-            if int(user["strong"]) < 200:
-                if user["strong"] is not None:
-                    if int(user["strong"]) < 200:
-                        user["strong"] += 1 
-                        print(f"Сила пользователя {user_id} восстановлена: {user['strong']}")
-                    else:
-                        print(f"Сила пользователя {user_id} не инициализирована.")
+            if "strong" in user:
+                user["strong"] = int(user["strong"])
+                if user["strong"] < 200:
+                    user["strong"] += 1
+                    print(f"Сила пользователя {user_id} восстановлена: {user['strong']}")
+                else:
+                    print(f"Сила пользователя {user_id} не инициализирована.")
+            else:
+                print(f"Сила пользователя {user_id} не найдена.")
         save_data(db, file_name)
         time.sleep(10)
 
@@ -43,27 +45,15 @@ def addinfo():
         data = request.get_json()
         uid = str(data.get('uid'))
         count = str(data.get('count'))
-        strong = str(data.get('strong'))
+        strong = data.get('strong')
         youname = str(data.get('youname'))
-        db[uid] = {"uid": str(uid), "count": str(count), "strong": str(strong), "youname": str(youname)}
+        db[uid] = {"uid": str(uid), "count": str(count), "strong": strong, "youname": str(youname)}
         print("Информация добавлена:", db[uid])
         save_data(db, file_name)
         return "Успешно"
     except Exception as e:
         print(f"Ошибка при добавлении информации: {str(e)}")
         return "Ошибка: возникла проблема с добавлением информации", 500
-
-@app.route('/getstrong', methods=['GET'])
-def getstrong():
-    try:
-        uid = request.args.get('uid')
-        if uid in db:
-            return str(db[uid]["strong"])
-        else:
-            return "Информация не найдена"
-    except Exception as e:
-        print(f"Ошибка при получении силы: {str(e)}")
-        return "Ошибка: возникла проблема с получением силы", 500
 
 @app.route('/getinfo', methods=['GET'])
 def getinfo():
@@ -82,7 +72,7 @@ def getinfo():
 def setuid(uid):
     try:
         towrite = {"uid": uid}
-        with open("/data/data.json", 'w') as f:
+        with open("/data/data.json" if "AMVERA" in os.environ else "data/data.json", 'w') as f:
             json.dump(towrite, f)
         print("Новый uid зарегестрирован:", uid)
         return "Успешно"
@@ -93,7 +83,7 @@ def setuid(uid):
 @app.route('/')
 def index():
     try:
-        with open("/data/data.json", "r") as rf:
+        with open("/data/data.json" if "AMVERA" in os.environ else "data/data.json", "r") as rf:
             jsonfile = json.loads(rf.read())
             uid = jsonfile.get("uid")
     except FileNotFoundError:

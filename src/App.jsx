@@ -35,6 +35,7 @@ export default function App() {
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
   const [respromo, setRespromo] = useState("");
+  const [user, setUser] = useState(null);
   const server = "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
 
   useEffect(() => {
@@ -75,7 +76,21 @@ export default function App() {
     setBets(storedBets ? parseInt(storedBets) : bets);
     setMaxtore(storedMaxtore ? parseInt(storedMaxtore) : maxtore);
     const intervalId = setInterval(() => {
-      setStrong(getStrong());
+      fetch(`${server}getinfo?uid=${storedUid}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Ошибка запроса');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setUser(data);
+        console.log(data);
+        setStrong(data.strong);
+      })
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+      });
     }, 10000);
     return () => clearInterval(intervalId);
   }, []);
@@ -120,19 +135,6 @@ export default function App() {
       return response.data;
     } catch (error) {
       setOpen(false);
-      return error;
-    }
-  }
-
-  function getStrong() {
-    try {
-      const response = axios.get(`${server}getstrong?uid=${uid}`, {
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
-      });
-      return response.data;
-    } catch (error) {
       return error;
     }
   }
