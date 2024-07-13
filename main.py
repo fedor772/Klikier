@@ -1,14 +1,8 @@
 import json
 from flask import Flask, request
 from flask_cors import CORS
-<<<<<<< HEAD
-import threading
-import time
-import os
-=======
 import os
 import threading
->>>>>>> parent of f0fbacb (Подготовка к созданию фонового восстановления силы)
 
 app = Flask(__name__)
 CORS(app)
