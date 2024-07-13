@@ -1,28 +1,9 @@
 import json
 from flask import Flask, request
 from flask_cors import CORS
-import threading
-import time
-import os
 
 app = Flask(__name__)
 CORS(app)
-
-def restore_strength():
-    while True:
-        for user_id in db:
-            user = db[user_id]
-            if "strong" in user:
-                user["strong"] = int(user["strong"])
-                if user["strong"] < 200:
-                    user["strong"] += 1
-                    print(f"Сила пользователя {user_id} восстановлена: {user['strong']}")
-                else:
-                    print(f"Сила пользователя {user_id} не инициализирована.")
-            else:
-                print(f"Сила пользователя {user_id} не найдена.")
-        save_data(db, file_name)
-        time.sleep(10)
 
 def load_data(file_name):
     try:
@@ -36,7 +17,7 @@ def save_data(data, file_name):
     with open(file_name, 'w') as file:
         json.dump(data, file, indent=4)
 
-file_name = "/data/database.json" if "AMVERA" in os.environ else "data/database.json"
+file_name = '/data/database.json'
 db = load_data(file_name)
 
 @app.route('/addinfo', methods=['POST'])
@@ -45,15 +26,16 @@ def addinfo():
         data = request.get_json()
         uid = str(data.get('uid'))
         count = str(data.get('count'))
-        strong = data.get('strong')
+        strong = str(data.get('strong'))
         youname = str(data.get('youname'))
-        db[uid] = {"uid": str(uid), "count": str(count), "strong": strong, "youname": str(youname)}
+        db[uid] = {"uid": str(uid), "count": str(count), "strong": str(strong), "youname": str(youname)}
         print("Информация добавлена:", db[uid])
         save_data(db, file_name)
         return "Успешно"
     except Exception as e:
         print(f"Ошибка при добавлении информации: {str(e)}")
         return "Ошибка: возникла проблема с добавлением информации", 500
+
 
 @app.route('/getinfo', methods=['GET'])
 def getinfo():
@@ -72,7 +54,7 @@ def getinfo():
 def setuid(uid):
     try:
         towrite = {"uid": uid}
-        with open("/data/data.json" if "AMVERA" in os.environ else "data/data.json", 'w') as f:
+        with open("/data/data.json", 'w') as f:
             json.dump(towrite, f)
         print("Новый uid зарегестрирован:", uid)
         return "Успешно"
@@ -83,7 +65,7 @@ def setuid(uid):
 @app.route('/')
 def index():
     try:
-        with open("/data/data.json" if "AMVERA" in os.environ else "data/data.json", "r") as rf:
+        with open("/data/data.json", "r") as rf:
             jsonfile = json.loads(rf.read())
             uid = jsonfile.get("uid")
     except FileNotFoundError:
@@ -116,7 +98,7 @@ def promo():
                 return "Промокод был применён до этого"
             else:
                 db[code] = "del"
-                save_data(db, file_name)
+                save_data(data, file_name)
                 return "Успешно"
         else:
             return "Промокод не найден"
@@ -144,6 +126,4 @@ def addpromo():
         return "Ошибка: возникла проблема с добавлением промокода", 500
 
 if __name__ == '__main__':
-    restore_strength_thread = threading.Thread(target=restore_strength)
-    restore_strength_thread.start()
     app.run(debug=True)

@@ -35,8 +35,7 @@ export default function App() {
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
   const [respromo, setRespromo] = useState("");
-  const [user, setUser] = useState(null);
-  const server = "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
+  const server = "https://rcoin-fedorr.amvera.io/";
 
   useEffect(() => {
     const storedCount = localStorage.getItem("count");
@@ -71,28 +70,10 @@ export default function App() {
     setPhand(storedPhand);
     setPfhand(storedPfhand);
     setPffhand(storedPffhand);
-    setTimes(storedTimes ? parseInt(storedTimes) : times);
-    setBett(storedBett ? parseInt(storedBett) : bett);
-    setBets(storedBets ? parseInt(storedBets) : bets);
-    setMaxtore(storedMaxtore ? parseInt(storedMaxtore) : maxtore);
-    const intervalId = setInterval(() => {
-      fetch(`${server}getinfo?uid=${storedUid}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Ошибка запроса');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setUser(data);
-        console.log(data);
-        setStrong(data.strong);
-      })
-      .catch(error => {
-        console.error('Error fetching user data:', error);
-      });
-    }, 10000);
-    return () => clearInterval(intervalId);
+    setTimes(storedTimes ? parseInt(storedTimes) : 1);
+    setBett(storedBett ? parseInt(storedBett) : 100);
+    setBets(storedBets ? parseInt(storedBets) : 75);
+    setMaxtore(storedMaxtore ? parseInt(storedMaxtore) : 200);
   }, []);
 
   useEffect(() => {
@@ -158,6 +139,16 @@ export default function App() {
       }
     });
   }
+
+  /*useEffect(() => {
+    const strongInterval = setInterval(() => {
+      if (strong < maxtore) {
+        setStrong((prevStrong) => prevStrong + 1);
+        localStorage.setItem("strong", strong);
+      }
+    }, 10000);
+    return () => clearInterval(strongInterval);
+  }, [strong]);*/
 
   function handleClick() {
     if (strong > 0) {
