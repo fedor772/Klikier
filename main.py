@@ -14,7 +14,7 @@ def restore_strength():
             user = db[user_id]
             if "strong" in user:
                 user["strong"] = int(user["strong"])
-                if user["strong"] < 200:
+                if user["strong"] < user["maxtore"] if "maxtore" in user else 200:
                     user["strong"] += 1
                     print(f"Сила пользователя {user_id} восстановлена: {user['strong']}")
                 else:
@@ -45,9 +45,10 @@ def addinfo():
         data = request.get_json()
         uid = str(data.get('uid'))
         count = str(data.get('count'))
-        strong = data.get('strong')
+        strong = json.loads(getinfo()).get(uid, {}).get('strong', 0)
         youname = str(data.get('youname'))
-        db[uid] = {"uid": str(uid), "count": str(count), "strong": strong, "youname": str(youname)}
+        maxtore = data.get('maxtore')
+        db[uid] = {"uid": str(uid), "count": str(count), "strong": strong, "youname": str(youname), "maxtore": maxtore}
         print("Информация добавлена:", db[uid])
         save_data(db, file_name)
         return "Успешно"
