@@ -35,9 +35,13 @@ export default function App() {
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
   const [respromo, setRespromo] = useState("");
+<<<<<<< HEAD
   var actstrong = strong;
   const server =
     "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
+=======
+  const server = import.meta.env.URL;
+>>>>>>> parent of f0fbacb (Подготовка к созданию фонового восстановления силы)
 
   useEffect(() => {
     const storedUid = localStorage.getItem("uid");
@@ -173,6 +177,19 @@ export default function App() {
     });
   }
 
+<<<<<<< HEAD
+=======
+  useEffect(() => {
+    const strongInterval = setInterval(() => {
+      if (strong < maxtore) {
+        setStrong((prevStrong) => prevStrong + 1);
+        localStorage.setItem("strong", strong);
+      }
+    }, 10000);
+    return () => clearInterval(strongInterval);
+  }, [strong]);
+
+>>>>>>> parent of f0fbacb (Подготовка к созданию фонового восстановления силы)
   function handleClick() {
     if (strong > 0) {
       setCount(count + times);

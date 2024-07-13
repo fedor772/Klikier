@@ -1,9 +1,14 @@
 import json
 from flask import Flask, request
 from flask_cors import CORS
+<<<<<<< HEAD
 import threading
 import time
 import os
+=======
+import os
+import threading
+>>>>>>> parent of f0fbacb (Подготовка к созданию фонового восстановления силы)
 
 app = Flask(__name__)
 CORS(app)
@@ -36,7 +41,11 @@ def save_data(data, file_name):
     with open(file_name, 'w') as file:
         json.dump(data, file, indent=4)
 
+<<<<<<< HEAD
 file_name = "/data/database.json" if "AMVERA" in os.environ else "data/database.json"
+=======
+file_name = 'database.json'
+>>>>>>> parent of f0fbacb (Подготовка к созданию фонового восстановления силы)
 db = load_data(file_name)
 
 @app.route('/addinfo', methods=['POST'])
@@ -73,7 +82,11 @@ def getinfo():
 def setuid(uid):
     try:
         towrite = {"uid": uid}
+<<<<<<< HEAD
         with open("/data/data.json" if "AMVERA" in os.environ else "data/data.json", 'w') as f:
+=======
+        with open("data.json", 'w') as f:
+>>>>>>> parent of f0fbacb (Подготовка к созданию фонового восстановления силы)
             json.dump(towrite, f)
         print("Новый uid зарегестрирован:", uid)
         return "Успешно"
@@ -84,7 +97,11 @@ def setuid(uid):
 @app.route('/')
 def index():
     try:
+<<<<<<< HEAD
         with open("/data/data.json" if "AMVERA" in os.environ else "data/data.json", "r") as rf:
+=======
+        with open("data.json", "r") as rf:
+>>>>>>> parent of f0fbacb (Подготовка к созданию фонового восстановления силы)
             jsonfile = json.loads(rf.read())
             uid = jsonfile.get("uid")
     except FileNotFoundError:
@@ -144,7 +161,21 @@ def addpromo():
         print(f"Ошибка при добавлении промокода: {str(e)}")
         return "Ошибка: возникла проблема с добавлением промокода", 500
 
+
+def run_bot():
+    os.system("python bot.py")
+
+def run_admin():
+    os.system("python admin.py")
+
 if __name__ == '__main__':
+<<<<<<< HEAD
     restore_strength_thread = threading.Thread(target=restore_strength)
     restore_strength_thread.start()
+=======
+    bot_thread = threading.Thread(target=run_bot)
+    bot_thread.start()
+    admin_thread = threading.Thread(target=run_admin)
+    admin_thread.start()
+>>>>>>> parent of f0fbacb (Подготовка к созданию фонового восстановления силы)
     app.run(debug=True)
