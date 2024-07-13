@@ -7,7 +7,7 @@ import fcntl
 
 lock_file = "/tmp/my_bot_lock"
 
-bot = TeleBot(os.environ['TELEGRAM'])
+bot = TeleBot(os.environ['Telegram'])
 
 @bot.message_handler(commands=['start'])
 def url(message):

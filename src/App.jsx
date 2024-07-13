@@ -35,13 +35,13 @@ export default function App() {
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
   const [respromo, setRespromo] = useState("");
-  const server = "https://rcoin-fedorr.amvera.io/";
+  const server = import.meta.env.URL;
 
   useEffect(() => {
-    const storedCount = localStorage.getItem("count");
-    const storedStrong = localStorage.getItem("strong");
-    const storedYouname = localStorage.getItem("youname");
     const storedUid = localStorage.getItem("uid");
+    const storedStrong = getStrong() > localStorage.getItem("strong") ? getStrong() : localStorage.getItem("strong");
+    const storedCount = localStorage.getItem("count");
+    const storedYouname = localStorage.getItem("youname");
     const storedTimes = localStorage.getItem("times");
     const storedBett = localStorage.getItem("bett");
     const storedBets = localStorage.getItem("bets");
@@ -62,7 +62,6 @@ export default function App() {
     } else {
       confsUid();
     }
-    setStrong(storedStrong ? parseInt(storedStrong) : 200);
     setYouname(storedYouname ? storedYouname : "Анонимный пользователь");
     setOffchan(storedOffchan);
     setDsserv(storedDsserv);
@@ -80,22 +79,23 @@ export default function App() {
     const data = {
       uid: uid,
       count: count,
-      strong: strong,
       youname: youname,
+      maxtore: maxtore,
     };
     axios
       .post(`${server}addinfo`, data, {
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      }
-    })
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      })
       .then((response) => {
         console.log(response.data);
+        console.log(strong);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [count, strong, youname]);
+  }, [count, youname]);
 
   useEffect(() => {
     console.log(uid);
@@ -109,8 +109,8 @@ export default function App() {
     try {
       const response = await axios.get(server, {
         headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
+          "Access-Control-Allow-Origin": "*",
+        },
       });
       setOpen(true);
       return response.data;
@@ -120,15 +120,39 @@ export default function App() {
     }
   }
 
+  function getStrong() {
+    const storedUid = localStorage.getItem("uid");
+    fetch(`${server}getinfo?uid=${storedUid}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Ошибка запроса");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        console.log(`${server}getinfo?uid=${storedUid}`);
+        localStorage.setItem("strong", data.strong);
+        setStrong(data.strong);
+        actstrong = data.strong;
+        console.log("Actstrong: " + actstrong);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
   function confUid(auid) {
-    axios.post(`${server}setuid/${parseInt(auid) + 1}`, {
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      }
-    }).then((response) => {
-      console.log(auid);
-      console.log(response.data);
-    });
+    axios
+      .post(`${server}setuid/${parseInt(auid) + 1}`, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      })
+      .then((response) => {
+        console.log(auid);
+        console.log(response.data);
+      });
   }
 
   function confsUid() {
@@ -180,7 +204,7 @@ export default function App() {
   function subscribe(times, url) {
     localStorage.setItem(
       "count",
-      parseInt(localStorage.getItem("count")) + times
+      parseInt(localStorage.getItem("count")) + times,
     );
     window.location = url;
   }
@@ -204,8 +228,8 @@ export default function App() {
     axios
       .post(`${server}promo`, promodata, {
         headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
+          "Access-Control-Allow-Origin": "*",
+        },
       })
       .then((response) => {
         console.log(response.data);

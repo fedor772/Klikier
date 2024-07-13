@@ -1,6 +1,7 @@
 import json
 from flask import Flask, request
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -17,7 +18,7 @@ def save_data(data, file_name):
     with open(file_name, 'w') as file:
         json.dump(data, file, indent=4)
 
-file_name = '/data/database.json'
+file_name = "/data/database.json" if "AMVERA" in os.environ else "data/database.json"
 db = load_data(file_name)
 
 @app.route('/addinfo', methods=['POST'])
@@ -65,7 +66,7 @@ def setuid(uid):
 @app.route('/')
 def index():
     try:
-        with open("/data/data.json", "r") as rf:
+        with open("/data/data.json" if "AMVERA" in os.environ else "data/data.json", "r") as rf:
             jsonfile = json.loads(rf.read())
             uid = jsonfile.get("uid")
     except FileNotFoundError:
@@ -124,6 +125,13 @@ def addpromo():
     except Exception as e:
         print(f"Ошибка при добавлении промокода: {str(e)}")
         return "Ошибка: возникла проблема с добавлением промокода", 500
+
+
+def run_bot():
+    os.system("python bot.py")
+
+def run_admin():
+    os.system("python admin.py")
 
 if __name__ == '__main__':
     app.run(debug=True)
