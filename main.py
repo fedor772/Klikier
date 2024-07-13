@@ -55,7 +55,7 @@ def getinfo():
 def setuid(uid):
     try:
         towrite = {"uid": uid}
-        with open("/data/data.json", 'w') as f:
+        with open("/data/data.json" if "AMVERA" in os.environ else "data/data.json", 'w') as f:
             json.dump(towrite, f)
         print("Новый uid зарегестрирован:", uid)
         return "Успешно"
@@ -125,13 +125,6 @@ def addpromo():
     except Exception as e:
         print(f"Ошибка при добавлении промокода: {str(e)}")
         return "Ошибка: возникла проблема с добавлением промокода", 500
-
-
-def run_bot():
-    os.system("python bot.py")
-
-def run_admin():
-    os.system("python admin.py")
 
 if __name__ == '__main__':
     app.run(debug=True)

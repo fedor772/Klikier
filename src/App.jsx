@@ -35,11 +35,12 @@ export default function App() {
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
   const [respromo, setRespromo] = useState("");
-  const server = import.meta.env.URL;
+  const server =
+    "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
 
   useEffect(() => {
     const storedUid = localStorage.getItem("uid");
-    const storedStrong = getStrong() > localStorage.getItem("strong") ? getStrong() : localStorage.getItem("strong");
+    const storedStrong = localStorage.getItem("strong");
     const storedCount = localStorage.getItem("count");
     const storedYouname = localStorage.getItem("youname");
     const storedTimes = localStorage.getItem("times");
@@ -73,6 +74,7 @@ export default function App() {
     setBett(storedBett ? parseInt(storedBett) : 100);
     setBets(storedBets ? parseInt(storedBets) : 75);
     setMaxtore(storedMaxtore ? parseInt(storedMaxtore) : 200);
+    setStrong(storedStrong ? parseInt(storedStrong) : 200);
   }, []);
 
   useEffect(() => {
@@ -80,7 +82,7 @@ export default function App() {
       uid: uid,
       count: count,
       youname: youname,
-      maxtore: maxtore,
+      strong: strong,
     };
     axios
       .post(`${server}addinfo`, data, {
@@ -120,28 +122,6 @@ export default function App() {
     }
   }
 
-  function getStrong() {
-    const storedUid = localStorage.getItem("uid");
-    fetch(`${server}getinfo?uid=${storedUid}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Ошибка запроса");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        console.log(`${server}getinfo?uid=${storedUid}`);
-        localStorage.setItem("strong", data.strong);
-        setStrong(data.strong);
-        actstrong = data.strong;
-        console.log("Actstrong: " + actstrong);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
   function confUid(auid) {
     axios
       .post(`${server}setuid/${parseInt(auid) + 1}`, {
@@ -164,15 +144,34 @@ export default function App() {
     });
   }
 
-  /*useEffect(() => {
-    const strongInterval = setInterval(() => {
-      if (strong < maxtore) {
-        setStrong((prevStrong) => prevStrong + 1);
-        localStorage.setItem("strong", strong);
+  function restoreEnergy() {
+    const now = Math.floor(Date.now() / 1000);
+    const lastRestoreTime = parseInt(localStorage.getItem("lastRestoreTime"));
+    console.log(maxtore);
+    if (lastRestoreTime && strong < localStorage.getItem("maxtore")) {
+      const timeSinceLastRestore = now - lastRestoreTime;
+      const energyToRestore = Math.floor(timeSinceLastRestore / 10);
+
+      if (energyToRestore > 0) {
+        const currentEnergy = parseInt(localStorage.getItem("strong")) || 200;
+        const restoredEnergy = currentEnergy + energyToRestore;
+        localStorage.setItem("strong", restoredEnergy);
+        setStrong(restoredEnergy);
+        localStorage.setItem("lastRestoreTime", now.toString());
       }
+    } else {
+      localStorage.setItem("strong", maxtore);
+      localStorage.setItem("lastRestoreTime", now.toString());
+    }
+  }
+
+  useEffect(() => {
+    restoreEnergy();
+    const intervalId = setInterval(() => {
+      restoreEnergy();
     }, 10000);
-    return () => clearInterval(strongInterval);
-  }, [strong]);*/
+    return () => clearInterval(intervalId);
+  }, []);
 
   function handleClick() {
     if (strong > 0) {
@@ -372,7 +371,7 @@ export default function App() {
             <span>
               Максимальная сила
               <br />
-              {maxtore}
+              <span className="maxtore">{maxtore}</span>
             </span>
           </div>
           <div className="divader"></div>
