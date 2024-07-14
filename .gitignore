@@ -7,8 +7,6 @@ __pycache__/
 *.config
 data.json
 database.json
-.env
-
 
 # C extensions
 *.so

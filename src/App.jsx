@@ -35,8 +35,14 @@ export default function App() {
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
   const [respromo, setRespromo] = useState("");
+  const [imagee, setImagee] = useState("/Klikier/Rcoin1.png");
   const server =
     "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
+  const headers = {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  };
 
   useEffect(() => {
     const storedUid = localStorage.getItem("uid");
@@ -53,7 +59,6 @@ export default function App() {
     const storedPhand = localStorage.getItem("phand") === "true";
     const storedPfhand = localStorage.getItem("pfhand") === "true";
     const storedPffhand = localStorage.getItem("pffhand") === "true";
-
     if (storedCount) {
       setCount(parseInt(storedCount) + 1);
       setUid(storedUid ? parseInt(storedUid) : 0);
@@ -75,6 +80,7 @@ export default function App() {
     setBets(storedBets ? parseInt(storedBets) : 75);
     setMaxtore(storedMaxtore ? parseInt(storedMaxtore) : 200);
     setStrong(storedStrong ? parseInt(storedStrong) : 200);
+    setImage(storedCount);
   }, []);
 
   useEffect(() => {
@@ -85,11 +91,7 @@ export default function App() {
       strong: strong,
     };
     axios
-      .post(`${server}addinfo`, data, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      })
+      .post(`${server}addinfo`, data, headers)
       .then((response) => {
         console.log(response.data);
         console.log(strong);
@@ -109,11 +111,7 @@ export default function App() {
 
   async function getUid() {
     try {
-      const response = await axios.get(server, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
+      const response = await axios.get(server, headers);
       setOpen(true);
       return response.data;
     } catch (error) {
@@ -124,11 +122,7 @@ export default function App() {
 
   function confUid(auid) {
     axios
-      .post(`${server}setuid/${parseInt(auid) + 1}`, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      })
+      .post(`${server}setuid/${parseInt(auid) + 1}`, headers)
       .then((response) => {
         console.log(auid);
         console.log(response.data);
@@ -151,7 +145,6 @@ export default function App() {
     if (lastRestoreTime && strong < localStorage.getItem("maxtore")) {
       const timeSinceLastRestore = now - lastRestoreTime;
       const energyToRestore = Math.floor(timeSinceLastRestore / 10);
-
       if (energyToRestore > 0) {
         const currentEnergy = parseInt(localStorage.getItem("strong")) || 200;
         const restoredEnergy = currentEnergy + energyToRestore;
@@ -177,6 +170,7 @@ export default function App() {
     if (strong > 0) {
       setCount(count + times);
       setStrong(strong - times > 0 ? strong - times : 0);
+      setImage(count);
       localStorage.setItem("count", count);
       localStorage.setItem("strong", strong);
     } else {
@@ -218,6 +212,18 @@ export default function App() {
     }
   }
 
+  function setImage(count) {
+    if (count < 500) {
+      setImagee("/Klikier/Rcoin1.png");
+    } else if (count < 1000) {
+      setImagee("/Klikier/Rcoin2.png");
+    } else if (count < 5000) {
+      setImagee("/Klikier/Rcoin3.png");
+    } else if (count < 10000) {
+      setImagee("/Klikier/Rcoin4.png");
+    }
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
     const promodata = {
@@ -225,11 +231,7 @@ export default function App() {
       uid: uid,
     };
     axios
-      .post(`${server}promo`, promodata, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      })
+      .post(`${server}promo`, promodata, headers)
       .then((response) => {
         console.log(response.data);
         setRespromo(response.data);
@@ -268,7 +270,7 @@ export default function App() {
           <div style={{ height: 20 + "px" }}></div>
           <Stats />
           <img
-            src="/Klikier/coin.png"
+            src={imagee}
             onClick={handleClick}
             className="mainbutton"
           />
@@ -323,7 +325,7 @@ export default function App() {
               )}
             </li>
             <li>
-              Набрать 1000 кликов (награда – 100 кликов){" "}
+              Набрать 1000 монет (награда – 100 монет){" "}
               {!phand && (
                 <Button onClick={() => taskup("phand", 100, 1000)}>
                   Выполнить
@@ -331,7 +333,7 @@ export default function App() {
               )}
             </li>
             <li>
-              Набрать 5000 кликов (награда – 1000 кликов){" "}
+              Набрать 5000 монет (награда – 1000 монет){" "}
               {!pfhand && (
                 <Button onClick={() => taskup("pfhand", 1000, 5000)}>
                   Выполнить
@@ -339,7 +341,7 @@ export default function App() {
               )}
             </li>
             <li>
-              Набрать 10000 кликов (награда – 5000 кликов){" "}
+              Набрать 10000 монет (награда – 5000 монет){" "}
               {!pffhand && (
                 <Button onClick={() => taskup(pfhand, 5000, 10000)}>
                   Выполнить
