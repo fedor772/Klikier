@@ -139,10 +139,13 @@ export default function App() {
   }
 
   function restoreEnergy() {
+    if (strong < localStorage.getItem("maxtore")) {
+      setStrong(localStorage.getItem("maxtore"));
+    }
     const now = Math.floor(Date.now() / 1000);
     const lastRestoreTime = parseInt(localStorage.getItem("lastRestoreTime"));
     console.log(maxtore);
-    if (lastRestoreTime && strong < localStorage.getItem("maxtore")) {
+    if (lastRestoreTime) {
       const timeSinceLastRestore = now - lastRestoreTime;
       const energyToRestore = Math.floor(timeSinceLastRestore / 10);
       if (energyToRestore > 0) {
@@ -151,10 +154,19 @@ export default function App() {
         localStorage.setItem("strong", restoredEnergy);
         setStrong(restoredEnergy);
         localStorage.setItem("lastRestoreTime", now.toString());
+        if (strong < localStorage.getItem("maxtore")) {
+          setStrong(maxtore);
+        }
       }
     } else {
       localStorage.setItem("strong", maxtore);
+      if (strong < localStorage.getItem("maxtore")) {
+        setStrong(localStorage.getItem("maxtore"));
+      }
       localStorage.setItem("lastRestoreTime", now.toString());
+    }
+    if (strong < localStorage.getItem("maxtore")) {
+      setStrong(localStorage.getItem("maxtore"));
     }
   }
 
@@ -172,7 +184,7 @@ export default function App() {
       setStrong(strong - times > 0 ? strong - times : 0);
       setImage(count);
       localStorage.setItem("count", count);
-      localStorage.setItem("strong", strong);
+      localStorage.setItem("strong", strong - times > 0 ? strong - times : 0);
     } else {
       snackbar({ message: "Недостаточно силы" });
     }
