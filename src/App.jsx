@@ -78,7 +78,11 @@ export default function App() {
     setTimes(storedTimes ? parseInt(storedTimes) : 1);
     setBett(storedBett ? parseInt(storedBett) : 100);
     setBets(storedBets ? parseInt(storedBets) : 75);
-    setMaxtore(storedMaxtore ? parseInt(storedMaxtore) : 200);
+    if (storedMaxtore) {
+      setMaxtore(parseInt(storedMaxtore));
+    } else {
+      localStorage.setItem("maxtore", 200);
+    }
     setStrong(storedStrong ? parseInt(storedStrong) : 200);
     setImage(storedCount);
   }, []);
@@ -139,42 +143,43 @@ export default function App() {
   }
 
   function restoreEnergy() {
-    if (strong < localStorage.getItem("maxtore")) {
-      setStrong(localStorage.getItem("maxtore"));
-    }
     const now = Math.floor(Date.now() / 1000);
-    const lastRestoreTime = parseInt(localStorage.getItem("lastRestoreTime"));
-    console.log(maxtore);
+    const lastRestoreTime = 
+      parseInt(localStorage.getItem("lastRestoreTime"));
+
     if (lastRestoreTime) {
       const timeSinceLastRestore = now - lastRestoreTime;
       const energyToRestore = Math.floor(timeSinceLastRestore / 10);
+
       if (energyToRestore > 0) {
-        const currentEnergy = parseInt(localStorage.getItem("strong")) || 200;
+        const currentEnergy = parseInt(localStorage.getItem("strong")) || 
+            0;
         const restoredEnergy = currentEnergy + energyToRestore;
         localStorage.setItem("strong", restoredEnergy);
         setStrong(restoredEnergy);
         localStorage.setItem("lastRestoreTime", now.toString());
-        if (strong < localStorage.getItem("maxtore")) {
-          setStrong(maxtore);
-        }
       }
     } else {
-      localStorage.setItem("strong", maxtore);
-      if (strong < localStorage.getItem("maxtore")) {
-        setStrong(localStorage.getItem("maxtore"));
-      }
+      localStorage.setItem("strong", 200);
       localStorage.setItem("lastRestoreTime", now.toString());
-    }
-    if (strong < localStorage.getItem("maxtore")) {
-      setStrong(localStorage.getItem("maxtore"));
     }
   }
 
   useEffect(() => {
-    restoreEnergy();
+    if (localStorage.getItem("strong") < localStorage.getItem("maxtore")) {
+      restoreEnergy(); 
+    } else {
+      console.log("Максимум");
+    }
+
     const intervalId = setInterval(() => {
-      restoreEnergy();
-    }, 10000);
+      if (localStorage.getItem("strong") < localStorage.getItem("maxtore")) {
+        restoreEnergy(); 
+      } else {
+        console.log("Максимум");
+      }
+    }, 10000); 
+
     return () => clearInterval(intervalId);
   }, []);
 
