@@ -9,6 +9,7 @@ import {
   FaHotel,
   FaAngleRight,
   FaRedo,
+  FaGithub,
 } from "react-icons/fa";
 import { Button, Alert, ProgressBar, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -36,8 +37,7 @@ export default function App() {
   const [code, setCode] = useState("");
   const [respromo, setRespromo] = useState("");
   const [imagee, setImagee] = useState("/Klikier/Rcoin1.png");
-  const server =
-    "https://6686c937-9050-4808-96d6-19b9b52146ce-00-2c4r1o8l4s6ez.sisko.replit.dev:5000/";
+  const server = "";
   const headers = {
     headers: {
       "Access-Control-Allow-Origin": "*",
@@ -144,44 +144,38 @@ export default function App() {
 
   function restoreEnergy() {
     const now = Math.floor(Date.now() / 1000);
-    const lastRestoreTime = 
-      parseInt(localStorage.getItem("lastRestoreTime"));
-
+    const lastRestoreTime = parseInt(localStorage.getItem("lastRestoreTime"));
     if (lastRestoreTime) {
       const timeSinceLastRestore = now - lastRestoreTime;
       const energyToRestore = Math.floor(timeSinceLastRestore / 10);
 
       if (energyToRestore > 0) {
-        const currentEnergy = parseInt(localStorage.getItem("strong")) || 
-            0;
+        const currentEnergy = parseInt(localStorage.getItem("strong")) || 0;
         const restoredEnergy = currentEnergy + energyToRestore;
-        localStorage.setItem("strong", restoredEnergy);
-        setStrong(restoredEnergy);
-        localStorage.setItem("lastRestoreTime", now.toString());
+        if (restoredEnergy <= localStorage.getItem("maxtore")) {
+          localStorage.setItem("strong", restoredEnergy);
+          setStrong(restoredEnergy);
+          localStorage.setItem("lastRestoreTime", now.toString());
+        } else {
+          localStorage.setItem("strong", localStorage.getItem("maxtore"));
+          setStrong(localStorage.getItem("maxtore"));
+          localStorage.setItem("lastRestoreTime", now.toString());
+        }
       }
     } else {
-      localStorage.setItem("strong", 200);
+      localStorage.setItem("strong", strong);
       localStorage.setItem("lastRestoreTime", now.toString());
     }
   }
 
   useEffect(() => {
-    if (localStorage.getItem("strong") < localStorage.getItem("maxtore")) {
-      restoreEnergy(); 
-    } else {
-      console.log("Максимум");
-    }
-
-    const intervalId = setInterval(() => {
-      if (localStorage.getItem("strong") < localStorage.getItem("maxtore")) {
-        restoreEnergy(); 
-      } else {
-        console.log("Максимум");
-      }
-    }, 10000); 
-
-    return () => clearInterval(intervalId);
-  }, []);
+  restoreEnergy();
+  const intervalId = setInterval(() => {
+    restoreEnergy();
+    console.log("Восстановка");
+  }, 10000);
+  return () => clearInterval(intervalId);
+}, []);
 
   function handleClick() {
     if (strong > 0) {
@@ -253,7 +247,7 @@ export default function App() {
         console.log(response.data);
         setRespromo(response.data);
         if (response.data == "Успешно") {
-          localStorage.setItem("strong", strong + 50);
+          localStorage.setItem("strong", localStorage.getItem("maxtore"));
           subscribe(100, "");
         }
       })
@@ -286,11 +280,7 @@ export default function App() {
         <div className="home-page">
           <div style={{ height: 20 + "px" }}></div>
           <Stats />
-          <img
-            src={imagee}
-            onClick={handleClick}
-            className="mainbutton"
-          />
+          <img src={imagee} onClick={handleClick} className="mainbutton" />
         </div>
       )}
       {page === 1 && (
@@ -485,6 +475,14 @@ export default function App() {
               </Button>
             </Form>
             <div>{respromo}</div>
+            <div>
+              <span>Версия: 1.0</span>
+              <span style={{ margin: 10 + "px" }}></span>
+              <a href="https://github.com/fedor772/Klikier">
+                <FaGithub />
+                Исходный код
+              </a>
+            </div>
           </div>
         </div>
       )}
