@@ -37,7 +37,7 @@ export default function App() {
   const [code, setCode] = useState("");
   const [respromo, setRespromo] = useState("");
   const [imagee, setImagee] = useState("/Klikier/Rcoin1.png");
-  const server = "";
+  const server = "https://rcoin-fedorr.amvera.io/";
   const headers = {
     headers: {
       "Access-Control-Allow-Origin": "*",
@@ -173,7 +173,7 @@ export default function App() {
   const intervalId = setInterval(() => {
     restoreEnergy();
     console.log("Восстановка");
-  }, 10000);
+  }, 5000);
   return () => clearInterval(intervalId);
 }, []);
 
@@ -476,7 +476,7 @@ export default function App() {
             </Form>
             <div>{respromo}</div>
             <div>
-              <span>Версия: 1.0</span>
+              <span>Версия: 1.1</span>
               <span style={{ margin: 10 + "px" }}></span>
               <a href="https://github.com/fedor772/Klikier">
                 <FaGithub />
