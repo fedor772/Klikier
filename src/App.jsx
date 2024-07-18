@@ -9,6 +9,7 @@ import {
   FaHotel,
   FaAngleRight,
   FaRedo,
+  FaGithub,
 } from "react-icons/fa";
 import { Button, Alert, ProgressBar, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -35,13 +36,19 @@ export default function App() {
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
   const [respromo, setRespromo] = useState("");
-  const server = "https://rcoin-fedorr.amvera.io/";
+  const [imagee, setImagee] = useState("/Klikier/Rcoin1.png");
+  const server = "https://rcoin-lstan.amvera.io/";
+  const headers = {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  };
 
   useEffect(() => {
-    const storedCount = localStorage.getItem("count");
-    const storedStrong = localStorage.getItem("strong");
-    const storedYouname = localStorage.getItem("youname");
     const storedUid = localStorage.getItem("uid");
+    const storedStrong = localStorage.getItem("strong");
+    const storedCount = localStorage.getItem("count");
+    const storedYouname = localStorage.getItem("youname");
     const storedTimes = localStorage.getItem("times");
     const storedBett = localStorage.getItem("bett");
     const storedBets = localStorage.getItem("bets");
@@ -52,7 +59,6 @@ export default function App() {
     const storedPhand = localStorage.getItem("phand") === "true";
     const storedPfhand = localStorage.getItem("pfhand") === "true";
     const storedPffhand = localStorage.getItem("pffhand") === "true";
-
     if (storedCount) {
       setCount(parseInt(storedCount) + 1);
       setUid(storedUid ? parseInt(storedUid) : 0);
@@ -62,7 +68,6 @@ export default function App() {
     } else {
       confsUid();
     }
-    setStrong(storedStrong ? parseInt(storedStrong) : 200);
     setYouname(storedYouname ? storedYouname : "Анонимный пользователь");
     setOffchan(storedOffchan);
     setDsserv(storedDsserv);
@@ -73,29 +78,32 @@ export default function App() {
     setTimes(storedTimes ? parseInt(storedTimes) : 1);
     setBett(storedBett ? parseInt(storedBett) : 100);
     setBets(storedBets ? parseInt(storedBets) : 75);
-    setMaxtore(storedMaxtore ? parseInt(storedMaxtore) : 200);
+    if (storedMaxtore) {
+      setMaxtore(parseInt(storedMaxtore));
+    } else {
+      localStorage.setItem("maxtore", 200);
+    }
+    setStrong(storedStrong ? parseInt(storedStrong) : 200);
+    setImage(storedCount);
   }, []);
 
   useEffect(() => {
     const data = {
       uid: uid,
       count: count,
-      strong: strong,
       youname: youname,
+      strong: strong,
     };
     axios
-      .post(`${server}addinfo`, data, {
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      }
-    })
+      .post(`${server}addinfo`, data, headers)
       .then((response) => {
         console.log(response.data);
+        console.log(strong);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [count, strong, youname]);
+  }, [count, youname]);
 
   useEffect(() => {
     console.log(uid);
@@ -107,11 +115,7 @@ export default function App() {
 
   async function getUid() {
     try {
-      const response = await axios.get(server, {
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
-      });
+      const response = await axios.get(server, headers);
       setOpen(true);
       return response.data;
     } catch (error) {
@@ -121,14 +125,12 @@ export default function App() {
   }
 
   function confUid(auid) {
-    axios.post(`${server}setuid/${parseInt(auid) + 1}`, {
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      }
-    }).then((response) => {
-      console.log(auid);
-      console.log(response.data);
-    });
+    axios
+      .post(`${server}setuid/${parseInt(auid) + 1}`, headers)
+      .then((response) => {
+        console.log(auid);
+        console.log(response.data);
+      });
   }
 
   function confsUid() {
@@ -140,22 +142,48 @@ export default function App() {
     });
   }
 
-  useEffect(() => {
-    const strongInterval = setInterval(() => {
-      if (strong < maxtore) {
-        setStrong((prevStrong) => prevStrong + 1);
-        localStorage.setItem("strong", strong);
+  function restoreEnergy() {
+    const now = Math.floor(Date.now() / 1000);
+    const lastRestoreTime = parseInt(localStorage.getItem("lastRestoreTime"));
+    if (lastRestoreTime) {
+      const timeSinceLastRestore = now - lastRestoreTime;
+      const energyToRestore = Math.floor(timeSinceLastRestore / 10);
+
+      if (energyToRestore > 0) {
+        const currentEnergy = parseInt(localStorage.getItem("strong")) || 0;
+        const restoredEnergy = currentEnergy + energyToRestore;
+        if (restoredEnergy <= localStorage.getItem("maxtore")) {
+          localStorage.setItem("strong", restoredEnergy);
+          setStrong(restoredEnergy);
+          localStorage.setItem("lastRestoreTime", now.toString());
+        } else {
+          localStorage.setItem("strong", localStorage.getItem("maxtore"));
+          setStrong(localStorage.getItem("maxtore"));
+          localStorage.setItem("lastRestoreTime", now.toString());
+        }
       }
-    }, 10000);
-    return () => clearInterval(strongInterval);
-  }, [strong]);
+    } else {
+      localStorage.setItem("strong", strong);
+      localStorage.setItem("lastRestoreTime", now.toString());
+    }
+  }
+
+  useEffect(() => {
+  restoreEnergy();
+  const intervalId = setInterval(() => {
+    restoreEnergy();
+    console.log("Восстановка");
+  }, 5000);
+  return () => clearInterval(intervalId);
+}, []);
 
   function handleClick() {
     if (strong > 0) {
       setCount(count + times);
       setStrong(strong - times > 0 ? strong - times : 0);
+      setImage(count);
       localStorage.setItem("count", count);
-      localStorage.setItem("strong", strong);
+      localStorage.setItem("strong", strong - times > 0 ? strong - times : 0);
     } else {
       snackbar({ message: "Недостаточно силы" });
     }
@@ -180,7 +208,7 @@ export default function App() {
   function subscribe(times, url) {
     localStorage.setItem(
       "count",
-      parseInt(localStorage.getItem("count")) + times
+      parseInt(localStorage.getItem("count")) + times,
     );
     window.location = url;
   }
@@ -195,6 +223,18 @@ export default function App() {
     }
   }
 
+  function setImage(count) {
+    if (count < 500) {
+      setImagee("/Klikier/Rcoin1.png");
+    } else if (count < 1000) {
+      setImagee("/Klikier/Rcoin2.png");
+    } else if (count < 5000) {
+      setImagee("/Klikier/Rcoin3.png");
+    } else if (count < 10000) {
+      setImagee("/Klikier/Rcoin4.png");
+    }
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
     const promodata = {
@@ -202,16 +242,12 @@ export default function App() {
       uid: uid,
     };
     axios
-      .post(`${server}promo`, promodata, {
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
-      })
+      .post(`${server}promo`, promodata, headers)
       .then((response) => {
         console.log(response.data);
         setRespromo(response.data);
         if (response.data == "Успешно") {
-          localStorage.setItem("strong", strong + 50);
+          localStorage.setItem("strong", localStorage.getItem("maxtore"));
           subscribe(100, "");
         }
       })
@@ -244,11 +280,7 @@ export default function App() {
         <div className="home-page">
           <div style={{ height: 20 + "px" }}></div>
           <Stats />
-          <img
-            src="/Klikier/coin.png"
-            onClick={handleClick}
-            className="mainbutton"
-          />
+          <img src={imagee} onClick={handleClick} className="mainbutton" />
         </div>
       )}
       {page === 1 && (
@@ -300,7 +332,7 @@ export default function App() {
               )}
             </li>
             <li>
-              Набрать 1000 кликов (награда – 100 кликов){" "}
+              Набрать 1000 монет (награда – 100 монет){" "}
               {!phand && (
                 <Button onClick={() => taskup("phand", 100, 1000)}>
                   Выполнить
@@ -308,7 +340,7 @@ export default function App() {
               )}
             </li>
             <li>
-              Набрать 5000 кликов (награда – 1000 кликов){" "}
+              Набрать 5000 монет (награда – 1000 монет){" "}
               {!pfhand && (
                 <Button onClick={() => taskup("pfhand", 1000, 5000)}>
                   Выполнить
@@ -316,7 +348,7 @@ export default function App() {
               )}
             </li>
             <li>
-              Набрать 10000 кликов (награда – 5000 кликов){" "}
+              Набрать 10000 монет (награда – 5000 монет){" "}
               {!pffhand && (
                 <Button onClick={() => taskup(pfhand, 5000, 10000)}>
                   Выполнить
@@ -348,7 +380,7 @@ export default function App() {
             <span>
               Максимальная сила
               <br />
-              {maxtore}
+              <span className="maxtore">{maxtore}</span>
             </span>
           </div>
           <div className="divader"></div>
@@ -443,6 +475,14 @@ export default function App() {
               </Button>
             </Form>
             <div>{respromo}</div>
+            <div>
+              <span>Версия: 1.1</span>
+              <span style={{ margin: 10 + "px" }}></span>
+              <a href="https://github.com/fedor772/Klikier">
+                <FaGithub />
+                Исходный код
+              </a>
+            </div>
           </div>
         </div>
       )}

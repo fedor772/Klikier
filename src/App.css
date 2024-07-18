@@ -9,6 +9,7 @@
   background-repeat: no-repeat;
   background-attachment: fixed;
   color: white;
+  user-select:none;
 }
 
 .mainbutton {
