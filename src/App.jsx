@@ -35,7 +35,7 @@ export default function App() {
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
   const [respromo, setRespromo] = useState("");
-  const server = import.meta.env.URL;
+  const server = "https://rcoin-fedorr.amvera.io/";
 
   useEffect(() => {
     const storedCount = localStorage.getItem("count");
