@@ -350,7 +350,7 @@ export default function App() {
             <li>
               Набрать 10000 монет (награда – 5000 монет){" "}
               {!pffhand && (
-                <Button onClick={() => taskup(pfhand, 5000, 10000)}>
+                <Button onClick={() => taskup("pffhand", 5000, 10000)}>
                   Выполнить
                 </Button>
               )}
@@ -476,7 +476,7 @@ export default function App() {
             </Form>
             <div>{respromo}</div>
             <div>
-              <span>Версия: 1.1</span>
+              <span>Версия: 1.3</span>
               <span style={{ margin: 10 + "px" }}></span>
               <a href="https://github.com/fedor772/Klikier">
                 <FaGithub />
