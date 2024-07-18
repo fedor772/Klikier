@@ -476,7 +476,7 @@ export default function App() {
             </Form>
             <div>{respromo}</div>
             <div>
-              <span>Версия: 1.3</span>
+              <span>Версия: 1.4</span>
               <span style={{ margin: 10 + "px" }}></span>
               <a href="https://github.com/fedor772/Klikier">
                 <FaGithub />
