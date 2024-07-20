@@ -37,7 +37,8 @@ export default function App() {
   const [code, setCode] = useState("");
   const [respromo, setRespromo] = useState("");
   const [imagee, setImagee] = useState("/Klikier/Rcoin1.png");
-  const server = "https://rcoin-lstan.amvera.io/";
+  
+  const server = "http://127.0.0.1:5000/";
   const headers = {
     headers: {
       "Access-Control-Allow-Origin": "*",
@@ -169,13 +170,13 @@ export default function App() {
   }
 
   useEffect(() => {
-  restoreEnergy();
-  const intervalId = setInterval(() => {
     restoreEnergy();
-    console.log("Восстановка");
-  }, 5000);
-  return () => clearInterval(intervalId);
-}, []);
+    const intervalId = setInterval(() => {
+      restoreEnergy();
+      console.log("Восстановка");
+    }, 5000);
+    return () => clearInterval(intervalId);
+  }, []);
 
   function handleClick() {
     if (strong > 0) {
@@ -208,7 +209,7 @@ export default function App() {
   function subscribe(times, url) {
     localStorage.setItem(
       "count",
-      parseInt(localStorage.getItem("count")) + times,
+      parseInt(localStorage.getItem("count")) + times
     );
     window.location = url;
   }
@@ -235,6 +236,7 @@ export default function App() {
     }
   }
 
+  //TODO: make a custom promos
   function handleSubmit(event) {
     event.preventDefault();
     const promodata = {
@@ -246,9 +248,12 @@ export default function App() {
       .then((response) => {
         console.log(response.data);
         setRespromo(response.data);
-        if (response.data == "Успешно") {
+        if (!isNaN(parseFloat(response.data))) {
+          console.log("Валид");
           localStorage.setItem("strong", localStorage.getItem("maxtore"));
-          subscribe(100, "");
+          subscribe(parseInt(response.data), "");
+        } else {
+          console.log("Не валид");
         }
       })
       .catch((error) => {
@@ -309,7 +314,7 @@ export default function App() {
                   onClick={() => {
                     localStorage.setItem("dsserv", true);
                     window.location.reload();
-                    subscribe(50, "https://discord.com/invite/wMtjyJ2y");
+                    subscribe(50, "https://discord.gg/F4tgFEkQ9E");
                   }}
                 >
                   Выполнить
@@ -466,7 +471,7 @@ export default function App() {
             <Form onSubmit={handleSubmit} className="d-flex">
               <Form.Control
                 type="text"
-                placeholder="Введите промокод"
+                placeholder="Введите промокод или код для покупки"
                 data-bs-theme="dark"
                 onChange={(e) => setCode(e.target.value)}
               />
@@ -476,7 +481,7 @@ export default function App() {
             </Form>
             <div>{respromo}</div>
             <div>
-              <span>Версия: 1.4</span>
+              <span>Версия: 1.5</span>
               <span style={{ margin: 10 + "px" }}></span>
               <a href="https://github.com/fedor772/Klikier">
                 <FaGithub />

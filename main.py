@@ -83,30 +83,26 @@ def apply_promo(code):
         print("Не правильный промокод")
         return False
 
-
 @app.route('/promo', methods=['POST'])
 def promo():
     try:
         data = request.get_json()
         code = data.get('code')
-        promouid = data.get('uid')
         if code.isdigit():
-            return "Промокод не должен состоять из одних чисел"
+            return "Промокод не должен состоять из одних чисел", 200
         if apply_promo(code):
-            if db[code] == promouid:
-                return "Вы не можете применить свой же промокод"
-            elif db[code] == "del":
-                return "Промокод был применён до этого"
+            if db[code] == "del":
+                return "Промокод был применён до этого", 200
             else:
+                before = db[code]
                 db[code] = "del"
                 save_data(data, file_name)
-                return "Успешно"
+                return str(before), 200
         else:
-            return "Промокод не найден"
+            return "Промокод не найден", 200
     except Exception as e:
         print(f"Ошибка применения промокода: {str(e)}")
         return "Ошибка применения промокода", 500
-
 
 @app.route('/addpromo', methods=['POST'])
 def addpromo():
