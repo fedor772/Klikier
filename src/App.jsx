@@ -18,6 +18,7 @@ import { snackbar } from "mdui";
 import "mdui/mdui.css";
 
 export default function App() {
+  // Объяснения переменных
   const [count, setCount] = useState(0);
   const [strong, setStrong] = useState(200);
   const [page, setPage] = useState(0);
@@ -35,10 +36,8 @@ export default function App() {
   const [bets, setBets] = useState(75);
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
-  const [respromo, setRespromo] = useState("");
   const [imagee, setImagee] = useState("/Klikier/Rcoin1.png");
-  
-  const server = "http://127.0.0.1:5000/";
+  const server = ""; //! Это адресс сервера, из которого берутся данные
   const headers = {
     headers: {
       "Access-Control-Allow-Origin": "*",
@@ -46,6 +45,7 @@ export default function App() {
   };
 
   useEffect(() => {
+    // Восстанвление сохранений
     const storedUid = localStorage.getItem("uid");
     const storedStrong = localStorage.getItem("strong");
     const storedCount = localStorage.getItem("count");
@@ -60,6 +60,7 @@ export default function App() {
     const storedPhand = localStorage.getItem("phand") === "true";
     const storedPfhand = localStorage.getItem("pfhand") === "true";
     const storedPffhand = localStorage.getItem("pffhand") === "true";
+    // Проверка uid по сети
     if (storedCount) {
       setCount(parseInt(storedCount) + 1);
       setUid(storedUid ? parseInt(storedUid) : 0);
@@ -69,6 +70,7 @@ export default function App() {
     } else {
       confsUid();
     }
+    // Установка переменных в значения из сохранения
     setYouname(storedYouname ? storedYouname : "Анонимный пользователь");
     setOffchan(storedOffchan);
     setDsserv(storedDsserv);
@@ -88,6 +90,7 @@ export default function App() {
     setImage(storedCount);
   }, []);
 
+  // Отправка данных
   useEffect(() => {
     const data = {
       uid: uid,
@@ -97,10 +100,6 @@ export default function App() {
     };
     axios
       .post(`${server}addinfo`, data, headers)
-      .then((response) => {
-        console.log(response.data);
-        console.log(strong);
-      })
       .catch((error) => {
         console.error(error);
       });
@@ -128,10 +127,6 @@ export default function App() {
   function confUid(auid) {
     axios
       .post(`${server}setuid/${parseInt(auid) + 1}`, headers)
-      .then((response) => {
-        console.log(auid);
-        console.log(response.data);
-      });
   }
 
   function confsUid() {
@@ -173,7 +168,6 @@ export default function App() {
     restoreEnergy();
     const intervalId = setInterval(() => {
       restoreEnergy();
-      console.log("Восстановка");
     }, 5000);
     return () => clearInterval(intervalId);
   }, []);
@@ -231,12 +225,11 @@ export default function App() {
       setImagee("/Klikier/Rcoin2.png");
     } else if (count < 5000) {
       setImagee("/Klikier/Rcoin3.png");
-    } else if (count < 10000) {
+    } else {
       setImagee("/Klikier/Rcoin4.png");
     }
   }
 
-  //TODO: make a custom promos
   function handleSubmit(event) {
     event.preventDefault();
     const promodata = {
@@ -246,19 +239,17 @@ export default function App() {
     axios
       .post(`${server}promo`, promodata, headers)
       .then((response) => {
-        console.log(response.data);
-        setRespromo(response.data);
         if (!isNaN(parseFloat(response.data))) {
-          console.log("Валид");
           localStorage.setItem("strong", localStorage.getItem("maxtore"));
-          subscribe(parseInt(response.data), "");
-        } else {
-          console.log("Не валид");
+          if (parseInt(localStorage.getItem("count")) < parseInt(response.data) && parseInt(response.data) > 0) {
+            subscribe(parseInt(response.data), "");
+          } else {
+            snackbar({ message: "Недостаточно монет для покупки" });
+          }
         }
       })
       .catch((error) => {
         console.error(error);
-        setRespromo(error);
       });
   }
 
@@ -479,9 +470,8 @@ export default function App() {
                 <FaAngleRight />
               </Button>
             </Form>
-            <div>{respromo}</div>
             <div>
-              <span>Версия: 1.5</span>
+              <span>Версия: 1.6</span>
               <span style={{ margin: 10 + "px" }}></span>
               <a href="https://github.com/fedor772/Klikier">
                 <FaGithub />
