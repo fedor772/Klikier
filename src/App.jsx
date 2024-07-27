@@ -98,11 +98,9 @@ export default function App() {
       youname: youname,
       strong: strong,
     };
-    axios
-      .post(`${server}addinfo`, data, headers)
-      .catch((error) => {
-        console.error(error);
-      });
+    axios.post(`${server}addinfo`, data, headers).catch((error) => {
+      console.error(error);
+    });
   }, [count, youname]);
 
   useEffect(() => {
@@ -125,8 +123,7 @@ export default function App() {
   }
 
   function confUid(auid) {
-    axios
-      .post(`${server}setuid/${parseInt(auid) + 1}`, headers)
+    axios.post(`${server}setuid/${parseInt(auid) + 1}`, headers);
   }
 
   function confsUid() {
@@ -205,7 +202,9 @@ export default function App() {
       "count",
       parseInt(localStorage.getItem("count")) + times
     );
-    window.location = url;
+    if (url !== "") {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
   }
 
   function taskup(hand, times, needs) {
@@ -240,12 +239,18 @@ export default function App() {
       .post(`${server}promo`, promodata, headers)
       .then((response) => {
         if (!isNaN(parseFloat(response.data))) {
-          localStorage.setItem("strong", localStorage.getItem("maxtore"));
-          if (parseInt(localStorage.getItem("count")) < parseInt(response.data) && parseInt(response.data) > 0) {
-            subscribe(parseInt(response.data), "");
+          if (parseInt(response.data) > 0) {
+            if (parseInt(localStorage.getItem("count")) - parseInt(response.data) < 0) {
+              window.location.reload();
+              return;
+            }
           } else {
-            snackbar({ message: "Недостаточно монет для покупки" });
+            localStorage.setItem("strong", localStorage.getItem("maxtore"));
+            subscribe(parseInt(response.data), "");
+            window.location.reload();
           }
+        } else {
+          snackbar({ message: response.data });
         }
       })
       .catch((error) => {
@@ -290,8 +295,8 @@ export default function App() {
                 <Button
                   onClick={() => {
                     localStorage.setItem("offchan", true);
-                    window.location.reload();
                     subscribe(50, "https://t.me/rcoinoff");
+                    window.location.reload();
                   }}
                 >
                   Выполнить
@@ -304,8 +309,8 @@ export default function App() {
                 <Button
                   onClick={() => {
                     localStorage.setItem("dsserv", true);
-                    window.location.reload();
                     subscribe(50, "https://discord.gg/F4tgFEkQ9E");
+                    window.location.reload();
                   }}
                 >
                   Выполнить
@@ -319,8 +324,8 @@ export default function App() {
                 <Button
                   onClick={() => {
                     localStorage.setItem("doptg", true);
-                    window.location.reload();
                     subscribe(25, "https://t.me/almazniy_golub");
+                    window.location.reload();
                   }}
                 >
                   Выполнить
@@ -471,9 +476,9 @@ export default function App() {
               </Button>
             </Form>
             <div>
-              <span>Версия: 1.6</span>
+              <span>Версия: 1.7</span>
               <span style={{ margin: 10 + "px" }}></span>
-              <a href="https://github.com/fedor772/Klikier">
+              <a href="https://github.com/fedor772/Klikier" target="_blank">
                 <FaGithub />
                 Исходный код
               </a>
