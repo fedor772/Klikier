@@ -1,15 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
-#root, body, html {
+#root,
+body,
+html {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-style: normal;
-  background: rgb(63,63,115);
-  background: linear-gradient(0deg, rgba(63,63,115,1) 0%, rgba(2,3,4,1) 100%);
+  background: rgb(63, 63, 115);
+  background: linear-gradient(
+    0deg,
+    rgba(63, 63, 115, 1) 0%,
+    rgba(2, 3, 4, 1) 100%
+  );
   background-repeat: no-repeat;
   background-attachment: fixed;
   color: white;
-  user-select:none;
+  user-select: none;
 }
 
 .mainbutton {
@@ -38,7 +44,7 @@
   justify-content: space-between;
 }
 
-.stats>span {
+.stats > span {
   text-align: center;
 }
 
@@ -60,7 +66,7 @@ nav {
   font-size: 12px;
 }
 
-nav>span {
+nav > span {
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -82,9 +88,19 @@ li {
   text-align: center;
 }
 
-.primary, .divader {
+.primary,
+.divader {
   height: 0.5px;
   background-color: white;
   border-radius: 50px;
   opacity: 50%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

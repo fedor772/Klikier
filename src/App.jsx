@@ -174,6 +174,7 @@ export default function App() {
       setCount(count + times);
       setStrong(strong - times > 0 ? strong - times : 0);
       setImage(count);
+      createParticles();
       localStorage.setItem("count", count);
       localStorage.setItem("strong", strong - times > 0 ? strong - times : 0);
     } else {
@@ -229,6 +230,52 @@ export default function App() {
     }
   }
 
+  function createParticles() {
+    const particlesContainer = document.createElement("div");
+    particlesContainer.style.position = "absolute";
+    particlesContainer.style.left = "50%";
+    particlesContainer.style.top = "50%";
+    particlesContainer.style.transform = "translate(-50%, -50%)";
+    document.body.appendChild(particlesContainer);
+
+    for (let i = 0; i < 5; i++) {
+      const particle = document.createElement("div");
+      particle.textContent = "🐸";
+      particle.style.position = "absolute";
+      particle.style.fontSize = "20px";
+      particle.style.userSelect = "none";
+      particle.style.pointerEvents = "none";
+      particle.style.animation = "fadeIn 1s ease-in-out";
+      particlesContainer.appendChild(particle);
+
+      const angle = Math.random() * Math.PI * 2;
+      let x = 0;
+      let y = 0;
+
+      const animation = particle.animate(
+        [
+          { transform: "translate(0, 0) scale(1)", opacity: 1 },
+          {
+            transform: `translate(${Math.cos(angle) * 100}px, ${Math.sin(angle) * 100}px) scale(0)`,
+            opacity: 0,
+          },
+        ],
+        {
+          duration: 1000,
+          easing: "cubic-bezier(0, .9, .57, 1)",
+          delay: Math.random() * 100,
+        }
+      );
+
+      animation.onfinish = () => {
+        particlesContainer.removeChild(particle);
+        if (particlesContainer.childElementCount === 0) {
+          document.body.removeChild(particlesContainer);
+        }
+      };
+    }
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
     const promodata = {
@@ -239,14 +286,28 @@ export default function App() {
       .post(`${server}promo`, promodata, headers)
       .then((response) => {
         if (!isNaN(parseFloat(response.data))) {
-          if (parseInt(response.data) > 0) {
-            if (parseInt(localStorage.getItem("count")) - parseInt(response.data) < 0) {
+          if (parseInt(response.data) < 0) {
+            if (
+              parseInt(localStorage.getItem("count")) +
+                parseInt(response.data) <
+              0
+            ) {
               window.location.reload();
               return;
+            } else {
+              localStorage.setItem("strong", localStorage.getItem("maxtore"));
+              localStorage.setItem(
+                "count",
+                parseInt(localStorage.getItem("count")) + response.data
+              );
+              window.location.reload();
             }
           } else {
             localStorage.setItem("strong", localStorage.getItem("maxtore"));
-            subscribe(parseInt(response.data), "");
+            localStorage.setItem(
+              "count",
+              parseInt(localStorage.getItem("count")) + response.data
+            );
             window.location.reload();
           }
         } else {
