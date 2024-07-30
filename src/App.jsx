@@ -37,7 +37,7 @@ export default function App() {
   const [maxtore, setMaxtore] = useState(200);
   const [code, setCode] = useState("");
   const [imagee, setImagee] = useState("/Klikier/Rcoin1.png");
-  const server = ""; //! Это адресс сервера, из которого берутся данные
+  const server = "0.0.0.0:5000"; //! Это адресс сервера, из которого берутся данные
   const headers = {
     headers: {
       "Access-Control-Allow-Origin": "*",
